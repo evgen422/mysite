@@ -193,17 +193,29 @@ def parse_avito(url, city_we_need):
 
 
 
-cities = ['moskva', 'ufa']#, 'sankt-peterburg', 'ufa'] #'vladivostok', 
+cities = ['moskva']#, 'ufa']#, 'sankt-peterburg', 'ufa'] #'vladivostok', 
 #cities = ['ufa']
 
 def generate_url():
     for city in cities:    
         for make in car_list:
-            url = f'https://www.avito.ru/{city}/avtomobili/{make}/?cd=1&radius=0&searchRadius=0'
-            #print(url)
-            print (city, make)
-            parse_avito(url, city)
-            time.sleep(7) #5 is ok
+                url = f'https://www.avito.ru/{city}/avtomobili/{make}?cd=1&radius=0&searchRadius=0'
+
+                #GETTING MODELS
+                response = requests.get(url, ua.random)
+                print(response)
+
+                # Parse the HTML content using BeautifulSoup 
+                soup = BeautifulSoup(response.content, 'html.parser')
+
+                #searching for the block of car ad
+                links = soup.find_all('a', {'class': 'popular-rubricator-link-Hrkjd'})
+                for link in links:
+                    link = link.attrs.get('href')
+                    print('link', link)
+                    url = f'https://www.avito.ru{link}'
+                    parse_avito(url, city)
+                    time.sleep(7) #5 is ok
 
 #start
 
@@ -213,4 +225,11 @@ conn.close()
 
 
 #end
-
+#tried to get models from db- fail
+#getting all available in db models of this make
+#sql_query = "SELECT DISTINCT model FROM cars WHERE make = %s"
+#cursor.execute(sql_query, (make,))
+#resul}t = cursor.fetchall()
+#sql_query = "SELECT link FROM `cars` WHERE model = %s LIMIT 1;"
+#cursor.execute(sql_query, (model_car,))
+#result_link = cursor.fetchall()
