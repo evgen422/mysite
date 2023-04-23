@@ -1,9 +1,25 @@
 from django import forms
-from .models import Cars
+from django.forms import ModelForm
+from avito.models import Cars
 
-class CarsForm(forms.Form):
-    car_make = forms.ChoiceField(choices=[], required=True)
+GET_MAKE_CHOISES = Cars.objects.order_by().values('make').distinct()
+MAKE_CHOISES = []
+for i in GET_MAKE_CHOISES:
+    make = i['make']
+    MAKE_CHOISES.append([make, make])
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['make'].choices = [(make, make) for make in Cars.objects.values_list('make', flat=True).distinct()]
+print(MAKE_CHOISES)
+
+class CarsForm(forms.ModelForm):
+    class Meta:
+        model = Cars
+        fields = ('make',)#, 'model', 'year')
+    
+    make = forms.ModelChoiceField(queryset=Cars.objects.order_by().values('make').distinct())#, choices = MAKE_CHOISES)#, default = 'audi')
+    #model = forms.CharField(label="model", blank=True)
+    #year = forms.IntegerField(label="year", blank=True)
+
+
+
+class NameForm(forms.Form):
+    your_name = forms.CharField(label="Your name", max_length=100)

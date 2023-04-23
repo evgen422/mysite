@@ -1,10 +1,15 @@
+<form action="/your-name/" method="post">
+    <label for="your_name">Your name: </label>
+    <input id="your_name" type="text" name="your_name" value="{{ current_name }}">
+    <input type="submit" value="OK">
+</form>
 
 
-{% block content %}
-    <h1>Top 10 Car Makes</h1>
-    <ul>
-    {% for make in top_makes %}
-        <li>{{ make.make }} - {{ make.count }}</li>
-    {% endfor %}
-    </ul>
-{% endblock %}
+
+
+<h1>Top 10 Car Makes</h1>
+<ul>
+{% for make in top_makes %}
+    <li>{{ make.make }} - {{ make.count }}</li>
+{% endfor %}
+</ul>

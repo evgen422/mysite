@@ -7,12 +7,17 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
+MAKE_CHOICES = (
+    ('audi','AUDI'),
+    ('bmw', 'BMW'),
+)
+
 
 class Cars(models.Model):
     id = models.CharField(primary_key=True, max_length=255)
     date = models.DateField(blank=True, null=True)
     city = models.TextField(blank=True, null=True)
-    make = models.TextField(blank=True, null=True)
+    make = models.TextField(blank=True, null=True, choices=MAKE_CHOICES, default='audi')
     model = models.TextField(blank=True, null=True)
     year = models.IntegerField(blank=True, null=True)
     mileage = models.IntegerField(blank=True, null=True)
@@ -27,3 +32,8 @@ class Cars(models.Model):
     class Meta:
         managed = False
         db_table = 'cars'
+
+    def __str__(self):
+        return f'{self.make} - {self.model}'
+
+#MAKE_CHOICES = models.Cars.objects.order_by().values('make').distinct()

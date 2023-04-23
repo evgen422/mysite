@@ -1,47 +1,44 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 
 # Create your views here.
 from django.db import models
-from .models import Cars
+from .models import Cars   #added avito and deleted
 from django.http import HttpResponse
 from django.template import loader
-from .forms import CarsForm
+from .forms import CarsForm #NameForm #CarsForm  #added avito and deleted
 
 
 
-def index(request):
-    if request.method == 'POST':
-        # Retrieve the product ID submitted by the user in the HTML form
-        car_make = request.POST.get('car_make', '')
-        
-        # Fetch the product from the database
-        car = Cars.objects.get(make=car_make)
-    
-    # Get all products from the database
-    cars = Cars.objects.all()
-    
-    # Pass the fetched products to the HTML template
-    template = loader.get_template("avito/index.html")
-    context = {'cars': cars}
-    return HttpResponse(template.render(context, request))
-    #return render(request, 'index.html', context)
+#def index(request):
 
-def car_make_list(request):
-    form = CarForm()
+def car_list(request):
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        print('POST incoming...................')
+        # create a form instance and populate it with data from the request:
+        form = CarsForm(request.POST)
+        print('form............', form)
+        # check whether it's valid:
+        if form.is_valid():
+            wanted_by_user_make = form.cleaned_data["make"]
+            print('make....................', wanted_by_user_make)
 
-    context = {
-        'form': form,
-    }
+            cars = Cars.objects.filter(make = wanted_by_user_make)[:10] #make = request.your_name ??????????
+            print(cars)
+            form = CarsForm()
+            context = {
+                'cars': cars,
+                'form': form,
+            }
+            return render(request, 'car_list.html', context)
 
-    return render(request, 'car_make_list.html', context)
-
-def top_makes(request):
-    top_makes = Cars.objects.values('make').annotate(count=models.Count('make')).order_by('-count')[:10]
-    # top_makes will be a queryset with the top 10 makes and their counts
-
-    context = {
-        'top_makes': top_makes,
-    }
-
-    return render(request, 'top_makes.html', context)
-
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        cars = Cars.objects.all()[:10]
+        form = CarsForm() #NameForm()
+        context = {
+            'cars': cars,
+            'form': form,
+        }
+        return render(request, 'car_list.html', context)
