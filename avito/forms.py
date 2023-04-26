@@ -2,60 +2,39 @@ from django import forms
 from django.forms import ModelForm
 from avito.models import Cars
 
-#HERE WE ARE BUILDING CHOICES LIST GETTING IT FROM DATABASE AND CONVERTING TO NEEDED FORMAT (X, x)
-MAKE_CHOISES = Cars.objects.order_by('make').values_list('make', 'make').distinct()
+#HERE WE ARE BUILDING CHOICES LISTS GETTING IT FROM DATABASE AND CONVERTING TO NEEDED FORMAT (X, x) AND ADDING 'ALL'
+def generate_make_choices():
+    MAKE_CHOICES = []
+    QUERY_MAKE_CHOICES = Cars.objects.order_by('make').values_list('make').distinct()
+    for i in QUERY_MAKE_CHOICES:
+        make = i[0]
+        MAKE_CHOICES.append([make, make])
+    MAKE_CHOICES.insert(0, (-1, "All"))
+    return MAKE_CHOICES
 
-
-#                                     DEPRICATED
-#MAKE_CHOISES = []
-#for i in GET_MAKE_CHOISES:
-#    make = i['make']
-#    MAKE_CHOISES.append([make, make])
-
-MODEL_CHOICES = (
-    ('choose','choose'),
-)
-
+def generate_model_choices(selected_by_user_make):
+    MODEL_CHOICES = []
+    QUERY_MODEL_CHOICES = Cars.objects.filter(make=selected_by_user_make).order_by('model').values_list('model').distinct()
+    for i in QUERY_MODEL_CHOICES:
+        model = i[0]
+        MODEL_CHOICES.append([model, model])
+    MODEL_CHOICES.insert(0, (-1, "All"))
+    return MODEL_CHOICES
 
 class CarsForm(forms.Form):# YOU EITHER MAKE FIELDS HERE WITH USUAL FORM OR go to model if ModelForm
-    
-    make = forms.ChoiceField(choices = MAKE_CHOISES)
-    model = forms.ChoiceField(choices = MODEL_CHOICES)
-
-
-
-class CarsForm_with_selected_make(forms.Form):# YOU EITHER MAKE FIELDS HERE WITH USUAL FORM OR go to model if ModelForm
     #extracting context
     def __init__(self, *args, **kwargs):
         context = kwargs.pop('context', {})
-        print("CONTEXT?????????", context)
-        selected_by_user_make = context[0].get('selected_by_user_make')
-        selected_by_user_model = context[1].get('selected_by_user_model')
-        print("CONTEXT?????????", selected_by_user_make, selected_by_user_model)
-        choices = Cars.objects.filter(make=selected_by_user_make).order_by('model').values_list('model', 'model').distinct()
-        print('forms make , choices: ', selected_by_user_make, choices)
+        make = context[0].get('make')
+        model = context[1].get('model')
+        print("Forms.py CONTEXT:", make, model)
+        if make == -1:
+            model_choices = ((-1, "All"),)
+        else:
+            model_choices = generate_model_choices(make)
         
-#FINALLY IT WORKS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         super().__init__(*args, **kwargs)
-        MADE_CHOICE = (
-        (selected_by_user_make,selected_by_user_make),
-        )
-        self.fields['make'] = forms.ChoiceField(choices=MADE_CHOICE)
-        self.fields['model'] = forms.ChoiceField(choices=choices, initial = selected_by_user_model)
-
-
-#YOU EITHER CLEAR IT HERE OR IN THE VIEW: NOT BOTH
-#    def clean(self):
-#        test = self.cleaned_data['test']
-#        #print(self)
-#        print('cleaned in form...........', test)
-#        valid_choices = dict(GEEKS_CHOICES).keys()
-#
-#        if test not in valid_choices:
- #           raise forms.ValidationError(f'{test} is not a valid choice.')
- #       else:
- #           print('test is valid', test)
-#
- #           return test
+        self.fields['make'] = forms.ChoiceField(choices = generate_make_choices(), initial = make)
+        self.fields['model'] = forms.ChoiceField(choices=model_choices, initial = model)
 
 

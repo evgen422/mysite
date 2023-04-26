@@ -5,22 +5,19 @@
 </form-->
 
 <!--cut off action="/your-name/"-->
-CAR_LIST 1
+<p>Make: {{ make }}!</p>
+
 <form  method="post">
     {% csrf_token %}
-    <!--{{ form.as_p }}-->
     <div>
-      <label for="{{ form.make.id_for_label }}">Make:</label>
+      <label for="{{ form.make.id_for_make }}">Make:</label>
       {{ form.make }}
     </div>
     <div>
       <label for="{{ form.model.id_for_label }}">Model:</label>
       {{ form.model }}
     </div>
-    <div>
-      <label for="{{ form.year.id_for_label }}">Year:</label>
-      {{ form.year }}
-    </div>
+
     <input type="submit" value="Submit">
 </form>
 
