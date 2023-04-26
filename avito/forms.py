@@ -12,9 +12,9 @@ def generate_make_choices():
     MAKE_CHOICES.insert(0, (-1, "All"))
     return MAKE_CHOICES
 
-def generate_model_choices(selected_by_user_make):
+def generate_model_choices(make):
     MODEL_CHOICES = []
-    QUERY_MODEL_CHOICES = Cars.objects.filter(make=selected_by_user_make).order_by('model').values_list('model').distinct()
+    QUERY_MODEL_CHOICES = Cars.objects.filter(make=make).order_by('model').values_list('model').distinct()
     for i in QUERY_MODEL_CHOICES:
         model = i[0]
         MODEL_CHOICES.append([model, model])
