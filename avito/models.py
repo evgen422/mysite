@@ -36,4 +36,5 @@ class Cars(models.Model):
     def __str__(self):
         return f'{self.make} - {self.model}'
 
-#MAKE_CHOICES = models.Cars.objects.order_by().values('make').distinct()
+
+
