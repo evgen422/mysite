@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+}
+
+.column {
+  flex: 1;
+}
+
+.middle {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.block {
+  padding: 10px;
+  border: 1px solid black;
+}

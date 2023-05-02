@@ -98,6 +98,7 @@ def parse_avito(url, city_we_need):
             if item_text[0] == 'Битый':
                 print('Битый')
                 continue
+            
 
             #if only 4 arguments are given then the car is new
             if len(item_text) == 4:
@@ -188,7 +189,8 @@ def parse_avito(url, city_we_need):
                 else:
                     print('%s found in db'%(car[0]))                    
             else:
-                print('city is not interested:', car[2])                
+                print('city is not interested:', car[2])
+                
         except:
             print('something went wrong. skipping parsing this car...')
 
@@ -215,9 +217,8 @@ def generate_url():
                     link = link.attrs.get('href')
                     print('link', link)
                     url = f'https://www.avito.ru{link}'
-      
                     parse_avito(url, city)
-                    time.sleep(4) #5 is ok
+                    time.sleep(7) #5 is ok
 
 #start
 
