@@ -1,17 +1,24 @@
+html, body {
+  height: 100%;
+  margin: 10;
+}
 .container {
   display: flex;
 }
 
-.column {
-  flex: 1;
+.column left {
+  flex-basis: 0%;
+  border: 1px solid black; /* add border to columns */
+  background: #fc0;
 }
 
-.middle {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.block {
-  padding: 10px;
-  border: 1px solid black;
+.car { 
+width: 200px; 
+background: #fc0; 
+padding: 5px; 
+border: solid 1px black; 
+float: left; 
+position: relative; 
+top: 40px; 
+left: -70px; 
 }

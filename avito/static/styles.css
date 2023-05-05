@@ -1,0 +1,48 @@
+.search_col{
+  background-color: lightyellow;
+  width: 24rem;
+}
+
+.result_col {
+  background-color: lightblue;
+  width: 65rem;
+}
+
+.card_id{
+  background-color: lightcyan;
+  width: 60rem;
+  height: 300px;
+  flex-direction: row;
+}
+.test{
+  display: block;
+}
+
+.form-hidden {
+  background-color: red;
+  display: none;
+}
+
+@media screen and (min-width: 576px) {
+  .card {
+    max-width: 540px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .card {
+    max-width: 720px;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .card {
+    max-width: 960px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .card {
+    max-width: 1140px;
+  }
+}
