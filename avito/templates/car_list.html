@@ -154,33 +154,33 @@
         </div>
 
         <!-- Right Results Column -->
-        <div class="col-md-8 col-sm-12 mb-3 result_col">
-          <h4>Search Results</h4>
-          <div class="row test">
+        <div class="col-md-8 col-sm-12 mb-3 px-0 result_col">
+          <h4 class="h4 px-3">Search Results</h4>
             <!-- Loop through results and create cards for each -->
             {% for car in cars %}
-            
-            <div class="card h-100 card_id" >
-               <div style="width: 40%;">
-                  <img src="{% url 'img_view' car.id %}" class="card-img-top rounded-end rounded-bottom  img-fluid"> 
+
+            <div class="container-fluid my-3 con_test">
+              <div class="card-img-wrapper">
+                <img src="{% url 'img_view' car.id %}" class="card-img-top rounded-end rounded-bottom  img-fluid"> 
+              </div>
+              <div class="card-body-wrapper px-sm-0 px-md-1">
+                <div class="card-body mx-1">
+                  <h5 class="text">{{ car.make }} - {{ car.model }}, {{ car.year }}</h5>
+                  <h3 class="text">{{ car.price }} ₽ </h3>
+                  <p class="card-text">{{ car.mileage }}km, {{ car.power }}h.p. {{ car.type }}, {{ car.wd }}, {{ car.fuel }}, {{ car.city }}</p>
+                  <p class="comment mb-md-2 mb-sm-0">{{ car.comment_text }}</p>
+                  <a href="#" class="btn btn-primary mt-0">View Details</a>
                 </div>
-                <div style="width: 60%;">                  
-                  <div class="card-body">
-                    <h5 class="card-title" style="font-size: 24px; color: #009cf0;">{{ car.make }} - {{ car.model }}, {{ car.year }}</h5>
-                    <h3 class="card-title" style="font-size: 24px;">{{ car.price }} ₽ </h3>
-                    <p class="card-text">{{ car.mileage }}km, {{ car.power }}h.p. {{ car.type }}, {{ car.wd }}, {{ car.fuel }}, {{ car.city }}</p>
-                    <p class="card-text" style="max-height: 100px; overflow: hidden;">{{ car.comment_text }}</p>
-                    <a href="#" class="btn btn-primary">View Details</a>
-                  </div>
-                </div>
+              </div>
+            </div>
+    
             {% empty %}
             <li>No cars found.</li>
 
             {% endfor %}
-          </div>
+        </div>
         </div>
       </div>
-    </div>
 
 
     <script>

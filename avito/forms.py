@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from avito.models import Cars
-from django_range_slider.fields import RangeSliderField
+#from django_range_slider.fields import RangeSliderField
 
 #HERE WE ARE BUILDING CHOICES LISTS GETTING IT FROM DATABASE AND CONVERTING TO NEEDED FORMAT (X, x) AND ADDING 'ALL'
 

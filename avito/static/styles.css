@@ -1,48 +1,89 @@
-.search_col{
+.search_col {
   background-color: lightyellow;
   width: 24rem;
 }
 
 .result_col {
   background-color: lightblue;
-  width: 65rem;
+  width: 60rem;
 }
 
-.card_id{
+.card {
   background-color: lightcyan;
-  width: 60rem;
+  display: flex;
   height: 300px;
-  flex-direction: row;
 }
-.test{
-  display: block;
+
+.card-img-wrapper {
+  width: 40%;
 }
+
+.card-img-top {
+  width: 100%;
+}
+.con_test {
+  display: flex;
+}
+
+.card-body-wrapper {
+  width: 60%;
+  padding: 0px 20px;
+}
+
 
 .form-hidden {
   background-color: red;
   display: none;
 }
+h5, .h5 {
+  font-size: 24px;
+  color: #009cf0;
+}
+h3, .h3 {
+  font-size: 24px;
+}
+.comment {
+  max-height: 100px;
+  overflow: hidden;
+}
+
+@media screen and (min-width: 300px) and (max-width: 575px){
+    h5, .h5 {
+      font-size: 16px;
+    }
+    h3, .h3 {
+      font-size: 16px;
+    }
+    .comment {
+      max-height: 0px;
+      overflow: hidden;
+      display: none;
+    }
+}
 
 @media screen and (min-width: 576px) {
-  .card {
-    max-width: 540px;
-  }
+    h5, .h5 {
+      font-size: 18px;
+    }
+    h3, .h3 {
+      font-size: 18px;
+    }
 }
 
 @media screen and (min-width: 768px) {
-  .card {
-    max-width: 720px;
-  }
+    h5, .h5 {
+      font-size: 20px;
+    }
+    h3, .h3 {
+      font-size: 20px;
+    }
 }
 
 @media screen and (min-width: 992px) {
-  .card {
-    max-width: 960px;
-  }
-}
-
-@media screen and (min-width: 1200px) {
-  .card {
-    max-width: 1140px;
-  }
+    h5, .h5 {
+      font-size: 24px;
+    }
+    h3, .h3 {
+      font-size: 24px;
+    }
 }
