@@ -15,7 +15,7 @@ import os
 #from io import BytesIO
 
 conn = mysql.connector.connect(
-    host="localhost",
+    host="localhost",#"95.140.153.88",
     user="evgeny",
     password="253321",
     database="AVITO_DB"
@@ -166,7 +166,7 @@ def parse_avito(url, city_we_need):
             #Saving to MySQL
             #filtering only needed city
             if car[2] == city_we_need:
-                #checking if id is in db
+                #checking if id is not in db
                 cursor.execute("SELECT id FROM cars WHERE id = %s", (car[0],))
                 data=cursor.fetchone()
                 if data is None:
@@ -174,15 +174,15 @@ def parse_avito(url, city_we_need):
                     cursor.execute('''INSERT INTO cars (id, date, city, make, model, year, mileage, power, price, link, type, wd, fuel, comment_text)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (car[0], car[1], car[2], car[3], car[4], car[5], car[6], car[7], car[8], car[9], car[10], car[11], car[12], car[13]))
                     conn.commit()
-                    print('new car found', car[2], car[3], car[4])
+                    print('new car found', car[0], car[2], car[3], car[4])
 
                     #saving on disk in a folder named as last digit of ID
                     folder = str(car[0])
                     folder = [int(d) for d in str(folder)]
                     folder = folder[-1]
 
-                    #detects username and returns folder path
-                    path = os.path.expanduser('~/img')
+                    #folder path
+                    path = ('/home/evgeny/img')
                     
                     urllib.request.urlretrieve(photo, f'{path}/{folder}/{car[0]}')
                 else:
