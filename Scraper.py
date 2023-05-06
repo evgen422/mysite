@@ -194,7 +194,7 @@ def parse_avito(url, city_we_need):
 
 
 
-cities = ['moskva']#, 'ufa']#, 'sankt-peterburg', 'ufa'] #'vladivostok', 
+cities = ['moskva', 'ufa']#, 'sankt-peterburg', 'ufa'] #'vladivostok', 
 #cities = ['ufa']
 
 def generate_url():
@@ -217,7 +217,7 @@ def generate_url():
                     url = f'https://www.avito.ru{link}'
       
                     parse_avito(url, city)
-                    time.sleep(4) #5 is ok
+                    time.sleep(10) #5 is ok
 
 #start
 

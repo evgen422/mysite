@@ -1,15 +1,13 @@
 .search_col {
-  background-color: lightyellow;
+  /*background-color: lightyellow;*/
   width: 24rem;
 }
 
 .result_col {
-  background-color: lightblue;
   width: 60rem;
 }
 
 .card {
-  background-color: lightcyan;
   display: flex;
   height: 300px;
 }
@@ -32,7 +30,6 @@
 
 
 .form-hidden {
-  background-color: red;
   display: none;
 }
 h5, .h5 {
