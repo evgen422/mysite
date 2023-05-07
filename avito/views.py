@@ -160,7 +160,7 @@ def checking_model(make, model):
         return model
 
 def img_view(request, car_id):
-    print(request, car_id)
+    #print(request, car_id)
     car = get_object_or_404(Cars, pk=car_id)
     if car.id:
         for i in str(car_id):
@@ -170,3 +170,13 @@ def img_view(request, car_id):
         response = FileResponse(f, content_type='image/webp')
         response['Content-Disposition'] = 'inline; filename=%s' % car.id
         return response
+
+def single_car_view(request, car_id):
+    car = get_object_or_404(Cars, pk=car_id)
+    print('404', car)
+    if car.id:
+        for i in str(car_id):
+            last_digit = i
+        image_path = os.path.join('/home/evgeny/img/',last_digit, str(car_id)) 
+        context = {'car': car}
+        return render(request, 'single_car.html', context)

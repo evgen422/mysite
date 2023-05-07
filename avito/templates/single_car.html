@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block content %}
+<div class="col-md-8 col-sm-12 col-lg-5 mb-3 mt-3 mx-auto single_car_col">
+
+      <img src="{% url 'img_view' car.id %}" 
+           class="card-img-top rounded img-fluid" 
+           alt="Car Image">
+
+
+
+  <div class="card-body mx-1">
+    <h5 class="text">{{ car.make }} - {{ car.model }}, {{ car.year }}</h5>
+    <h3 class="text">{{ car.price }} ₽ </h3>
+    <p class="card-text">{{ car.mileage }}km, {{ car.power }}h.p. {{ car.type }}, {{ car.wd }}, {{ car.fuel }}, {{ car.city }}</p>
+    <p class="comment_single mb-md-2 mb-sm-0">{{ car.comment_text }}</p>
+  </div>
+</div>
+
+
+
+{% endblock %}

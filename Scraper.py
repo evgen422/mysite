@@ -15,7 +15,7 @@ import os
 #from io import BytesIO
 
 conn = mysql.connector.connect(
-    host="localhost",#"95.140.153.88",
+    host="localhost",
     user="evgeny",
     password="253321",
     database="AVITO_DB"
@@ -24,7 +24,7 @@ cursor = conn.cursor()
 
 CAR_DB = {}
 car = ['0-id', '1-date', '2-city', '3-make', '4-model', '5-year', '6-mileage', '7-power', '8-price', '9-link', '10-type', '11-wd', '12-fuel', '13-comment']
-#car_list = ['acura', 'alfa_romeo', 'aston_martin', 'audi', 'baic', 'baw', 'bentley', 'bmw', 'brilliance', 'buick', 'byd', 'cadillac', 'changan', 'chery', 'chevrolet', 'chrysler', 'citroen', 'dacia', 'daewoo', 'daihatsu', 'daimler', 'datsun', 'derways', 'dodge', 'dongfeng', 'dw_hower', 'faw', 'ferrari', 'fiat', 'ford', 'gac', 'geely', 'genesis', 'gmc', 'great_wall', 'haima', 'haval', 'honda', 'hummer', 'hyundai', 'infiniti', 'iran_khodro', 'isuzu', 'iveco', 'jac', 'jaguar', 'jeep', 'jetta', 'jmc', 'kaiyi', 'kia', 'lamborghini', 'land_rover', 'lexus', 'lifan', 'lincoln', 'lixiang', 'lotus', 'maserati', 'mazda', 'mercedes-benz', 'mini', 'mitsubishi', 'morgan', 'neta', 'nio', 'nissan', 'opel', 'peugeot', 'polestar', 'porsche', 'ram', 'ravon', 'renault', 'renault_samsung', 'rivian', 'rolls_royce', 'rover', 'saab', 'saic', 'seat', 'seres', 'skoda', 'smart', 'ssangyong', 'subaru', 'suzuki', 'tank', 'tesla', 'tianye', 'toyota', 'volkswagen', 'volvo', 'vortex', 'zotye', 'vaz_lada', 'vis', 'gaz', 'zaz', 'izh', 'luaz', 'moskvich', 'tagaz', 'uaz']
+#car_list_long = ['acura', 'alfa_romeo', 'aston_martin', 'audi', 'baic', 'baw', 'bentley', 'bmw', 'brilliance', 'buick', 'byd', 'cadillac', 'changan', 'chery', 'chevrolet', 'chrysler', 'citroen', 'dacia', 'daewoo', 'daihatsu', 'daimler', 'datsun', 'derways', 'dodge', 'dongfeng', 'dw_hower', 'faw', 'ferrari', 'fiat', 'ford', 'gac', 'geely', 'genesis', 'gmc', 'great_wall', 'haima', 'haval', 'honda', 'hummer', 'hyundai', 'infiniti', 'iran_khodro', 'isuzu', 'iveco', 'jac', 'jaguar', 'jeep', 'jetta', 'jmc', 'kaiyi', 'kia', 'lamborghini', 'land_rover', 'lexus', 'lifan', 'lincoln', 'lixiang', 'lotus', 'maserati', 'mazda', 'mercedes-benz', 'mini', 'mitsubishi', 'morgan', 'neta', 'nio', 'nissan', 'opel', 'peugeot', 'polestar', 'porsche', 'ram', 'ravon', 'renault', 'renault_samsung', 'rivian', 'rolls_royce', 'rover', 'saab', 'saic', 'seat', 'seres', 'skoda', 'smart', 'ssangyong', 'subaru', 'suzuki', 'tank', 'tesla', 'tianye', 'toyota', 'volkswagen', 'volvo', 'vortex', 'zotye', 'vaz_lada', 'vis', 'gaz', 'zaz', 'izh', 'luaz', 'moskvich', 'tagaz', 'uaz']
 car_list = ['audi', 'bentley', 'bmw', 'chery', 'chevrolet',  'ferrari', 'ford', 'geely', 'haval', 'honda', 'hummer', 'hyundai', 'kia', 'lamborghini', 'land_rover', 'lexus', 'mazda', 'mercedes-benz', 'mitsubishi', 'nissan', 'opel', 'peugeot', 'porsche', 'renault', 'rolls_royce', 'skoda', 'subaru', 'suzuki', 'tesla', 'toyota', 'volkswagen', 'vaz_lada', 'moskvich']
 #car_list = ['ferrari']
 def parse_avito(url, city_we_need):
@@ -194,7 +194,7 @@ def parse_avito(url, city_we_need):
 
 
 
-cities = ['moskva', 'ufa']#, 'sankt-peterburg', 'ufa'] #'vladivostok', 
+cities = ['moskva', 'ufa']
 #cities = ['ufa']
 
 def generate_url():
@@ -222,16 +222,7 @@ def generate_url():
 #start
 
 generate_url() 
-#parse_avito('https://www.avito.ru/moskva/avtomobili/bmw?cd=1', 'moskva')   
+ 
 conn.close()
 
 
-#end
-#tried to get models from db- fail
-#getting all available in db models of this make
-#sql_query = "SELECT DISTINCT model FROM cars WHERE make = %s"
-#cursor.execute(sql_query, (make,))
-#resul}t = cursor.fetchall()
-#sql_query = "SELECT link FROM `cars` WHERE model = %s LIMIT 1;"
-#cursor.execute(sql_query, (model_car,))
-#result_link = cursor.fetchall()
