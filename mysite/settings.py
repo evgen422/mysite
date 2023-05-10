@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'portfolio',
     'avito',
     'widget_tweaks',
+    'opencv',
 ]
 
 MIDDLEWARE = [

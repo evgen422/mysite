@@ -38,7 +38,6 @@ location = element.location
 action = ActionChains(driver)
 
 for i in range(100, 105):
-	print(i)
 	i = 0-i
 	action.move_to_element_with_offset(element, 0, 0)
 	action.move_to_element_with_offset(element, 0, i)
@@ -49,14 +48,17 @@ time.sleep(2)
 html = driver.page_source
 soup = BeautifulSoup(html, 'html.parser')
 div = soup.find('div', {'class': 'ModalBodyPlayer'})
-print(div)
 video = div.find('iframe')
 link = video.attrs.get('src')
-print(link)
+link = link.split('token=')
+link = link[1]
+link = link.split('&mute=true')
+token = link[0]
+print(token)
 driver.quit()
 
 # Create a VideoCapture object and open the video stream
-stream_url = link
+'''stream_url = link
 cap = cv2.VideoCapture(stream_url)
 
 # Check if the video stream is open
@@ -77,3 +79,4 @@ else:
 # Release the video capture object and close all windows
 cap.release()
 cv2.destroyAllWindows()
+'''
