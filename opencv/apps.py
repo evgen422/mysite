@@ -63,7 +63,7 @@ def get_token():
     url = "http://maps.ufanet.ru/ufa" 
     options = Options()
     options.add_argument("--headless")
-    #options.add_argument("--no-sandbox")
+    options.add_argument("--no-sandbox")
     options.headless = True
 
     driver = webdriver.Chrome("/usr/bin/chromedriver", options=options)
