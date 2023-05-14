@@ -25,22 +25,26 @@ import datetime as dt
 from threading import Thread
 from queue import Queue
 frame_queue = Queue()  # Create a new queue to store the frames
-
+print('APPS.py LAUNCHED ONCE')
 
 
 def gen_frames():
-    print('2')
+    print('get frames: token called...')
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
+    #if token == 1:
     token = get_token()
     url = (f'{url1}{token}')
     print(url)
     capture = cv2.VideoCapture(url)
+    capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
     # Start the thread to read frames from the video stream
     thread = Thread(target=update, args=(capture,))
     thread.daemon = True
     thread.start()
 
+
 def update(capture):
+    start_time = time.time()
     while True:
         if capture.isOpened():
             capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
@@ -48,13 +52,19 @@ def update(capture):
             (status, frame) = capture.read()
             frame_queue.queue.clear()
             frame_queue.put(frame)
-            time.sleep(.035)
+
+            # calculate the time to sleep
+            elapsed_time = time.time() - start_time
+            sleep_time = max(0.035 - elapsed_time, 0)            #If the elapsed time is greater than 0.04 seconds, we set the sleep time to 0. Otherwise, we set the sleep time to the difference between 0.04 seconds and the elapsed time.
+            #print('APPS sleep_time, elapsed_time', round(sleep_time, 3), round(elapsed_time, 3))
+            time.sleep(sleep_time)
+            start_time = time.time()
 
 
 class OpencvConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'opencv'
-    print('1')
+    print('apps.py AppConfig starting...')
     def ready(self):
         t = threading.Thread(target=gen_frames)
         t.start()    

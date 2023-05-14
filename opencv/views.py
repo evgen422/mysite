@@ -22,6 +22,7 @@ import cv2
 import datetime as dt
 from threading import Thread
 from opencv.apps import frame_queue
+print('VIEWS.py LAUN')
 
 
 # Define the view that renders the HTML template and streams the video
@@ -31,8 +32,10 @@ def video_feed(request):
 def index(request):
     return render(request, 'opencv.html')
 
+
 def show_frame():
     # Convert the encoded image to a byte string and yield it as a response
+    start_time = time.time()
     while True:
         if not frame_queue.empty():
             fps_counter()
@@ -41,10 +44,20 @@ def show_frame():
             # Encode the frame as a JPEG image
             ret, buffer = cv2.imencode('.jpg', resized_frame)
             encoded_frame = buffer.tobytes()
-            time.sleep(0.04)
+
+            # calculate the time to sleep
+            elapsed_time = time.time() - start_time
+            sleep_time = max(0.04 - elapsed_time, 0)            #If the elapsed time is greater than 0.04 seconds, we set the sleep time to 0. Otherwise, we set the sleep time to the difference between 0.04 seconds and the elapsed time.
+            #print('VIEWSsleep_time, elapsed_time', round(sleep_time, 3), round(elapsed_time, 3))
+            time.sleep(sleep_time)
+            start_time = time.time()
 
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + encoded_frame + b'\r\n')
+
+
+
+
 
 time_start = dt.datetime.now()
 i = 0
@@ -59,6 +72,7 @@ def fps_counter():
         print('fps ', i)
         i = 0
         time_start = dt.datetime.now()
+
 
 '''
 This code defines a class `VideoStreamWidget` that initializes a video stream and displays its frames. It uses OpenCV library to handle the video stream.

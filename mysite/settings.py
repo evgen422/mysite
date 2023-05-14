@@ -14,7 +14,6 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-print(BASE_DIR)
 
 
 # Quick-start development settings - unsuitable for production
@@ -31,7 +30,20 @@ ALLOWED_HOSTS = ['*']
 #copied from web: trying to find index.html
 import os
 SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
-print(SETTINGS_PATH)
+print('SETTINGS FILE IS LAUNCHED ONCE')
+import traceback
+
+try:
+    raise Exception
+except Exception:
+    stack_trace = traceback.extract_stack()
+
+for frame in stack_trace:
+    if frame.filename != __file__:
+        print("settings.py imported by", frame.filename)
+        break
+
+# continue with other module code
 
 
 # Application definition
