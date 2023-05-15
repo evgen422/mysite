@@ -49,6 +49,8 @@ def show_frame():
             elapsed_time = time.time() - start_time
             sleep_time = max(0.04 - elapsed_time, 0)            #If the elapsed time is greater than 0.04 seconds, we set the sleep time to 0. Otherwise, we set the sleep time to the difference between 0.04 seconds and the elapsed time.
             #print('VIEWSsleep_time, elapsed_time', round(sleep_time, 3), round(elapsed_time, 3))
+            if elapsed_time > 0.2:
+                print('spike..', elapsed_time)
             time.sleep(sleep_time)
             start_time = time.time()
 
