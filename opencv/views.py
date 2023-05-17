@@ -1,23 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.db import models
 from django.http import HttpResponse
 from django.template import loader
-from django.http import FileResponse
 from django.http import StreamingHttpResponse
 
-import os
-from PIL import Image
-from django.shortcuts import get_object_or_404
-
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import time
-from bs4 import BeautifulSoup
 import cv2
 import datetime as dt
 from threading import Thread
@@ -39,16 +25,15 @@ def show_frame():
         #print('views id',threading.get_ident())
         if not frame_queue.empty():
             fps_counter()
-            frame = frame_queue.get()
-            # Encode the frame as a JPEG image
-            ret, buffer = cv2.imencode('.jpg', frame)
-            encoded_frame = buffer.tobytes()
+            encoded_frame = frame_queue.get()
+
+
 
             # calculate the time to sleep
             elapsed_time = time.time() - start_time
             if elapsed_time > 0.1:
                 print('VIEWS spike..', elapsed_time)
-            time.sleep(0.035)
+            time.sleep(0.039)#used to be 35
             start_time = time.time()
 
             yield (b'--frame\r\n'

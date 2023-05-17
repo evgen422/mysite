@@ -58,12 +58,15 @@ def update(capture):
                 i = 0
             if buffer == 100:
                 frame_queue.queue.clear()
-            frame_queue.put(frame)
+                            # Encode the frame as a JPEG image
+            ret, buffer = cv2.imencode('.jpg', frame)
+            encoded_frame = buffer.tobytes()
+            frame_queue.put(encoded_frame)
 
             elapsed_time = time.time() - start_time
             if elapsed_time > 0.1:
                 print('update spike..', round(elapsed_time, 3))
-            time.sleep(0.033)
+            time.sleep(0.03) #(0.033) used to work
             start_time = time.time()
 
 
