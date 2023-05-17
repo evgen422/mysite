@@ -22,7 +22,6 @@ import cv2
 import datetime as dt
 from threading import Thread
 from opencv.apps import frame_queue
-print('VIEWS.py LAUN')
 
 
 # Define the view that renders the HTML template and streams the video
@@ -37,21 +36,19 @@ def show_frame():
     # Convert the encoded image to a byte string and yield it as a response
     start_time = time.time()
     while True:
+        #print('views id',threading.get_ident())
         if not frame_queue.empty():
             fps_counter()
             frame = frame_queue.get()
-            resized_frame = cv2.resize(frame, (480, 320))
             # Encode the frame as a JPEG image
-            ret, buffer = cv2.imencode('.jpg', resized_frame)
+            ret, buffer = cv2.imencode('.jpg', frame)
             encoded_frame = buffer.tobytes()
 
             # calculate the time to sleep
             elapsed_time = time.time() - start_time
-            sleep_time = max(0.04 - elapsed_time, 0)            #If the elapsed time is greater than 0.04 seconds, we set the sleep time to 0. Otherwise, we set the sleep time to the difference between 0.04 seconds and the elapsed time.
-            #print('VIEWSsleep_time, elapsed_time', round(sleep_time, 3), round(elapsed_time, 3))
-            if elapsed_time > 0.2:
-                print('spike..', elapsed_time)
-            time.sleep(sleep_time)
+            if elapsed_time > 0.1:
+                print('VIEWS spike..', elapsed_time)
+            time.sleep(0.035)
             start_time = time.time()
 
             yield (b'--frame\r\n'
@@ -70,24 +67,8 @@ def fps_counter():
     time_cycle = dt.datetime.now()
     time_gap = time_cycle - time_start
     time_gap_ms = time_gap.total_seconds() * 1000
-    if time_gap_ms > 10000:
-        print('fps ', i)
+    if time_gap_ms > 1000:
+        print('fps ', i) #print(f'fps \r{i}', end='', flush=True) #
         i = 0
         time_start = dt.datetime.now()
 
-
-'''
-This code defines a class `VideoStreamWidget` that initializes a video stream and displays its frames. It uses OpenCV library to handle the video stream.
-
-The `__init__()` method is called when an object of the class is created. It sets the URL for the video stream, gets a token using the `get_token()` method, and constructs the complete URL by concatenating the URL and token. It then calls the `init()` method to initialize the video stream.
-
-The `init()` method initializes the video stream using the URL passed as an argument or the complete URL constructed by the `__init__()` method. It then starts a new thread to read frames from the video stream using the `update()` method.
-
-The `update()` method continuously reads frames from the video stream and stores them in the `frame` variable. It also sets the width and height of the frames using `cv2.CAP_PROP_FRAME_WIDTH` and `cv2.CAP_PROP_FRAME_HEIGHT` to 640x480. These frames are later resized to 320x240 and encoded as JPEG images.
-
-The `show_frame()` method is used to display the frames in the main program. It first resizes the frame to 480x320 pixels and encodes it as a JPEG image. It then yields the encoded frame as a response. The `yield` statement is used to generate a sequence of values, and each time it is called, it returns a new value.
-
-The `get_token()` method is used to get a token that is appended to the URL to authenticate the video stream.
-
-Overall, this code defines a simple video streaming widget that can be used to display video streams in Python programs.
-'''

@@ -25,7 +25,6 @@ import datetime as dt
 from threading import Thread
 from queue import Queue
 frame_queue = Queue()  # Create a new queue to store the frames
-print('APPS.py LAUNCHED ONCE')
 
 
 def gen_frames():
@@ -43,21 +42,28 @@ def gen_frames():
     thread.start()
 
 
+#THE RIGHT
 def update(capture):
+    print('apps id', threading.get_ident())
     start_time = time.time()
+    i=0
     while True:
         if capture.isOpened():
-            capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-            capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+            i = i+1
             (status, frame) = capture.read()
-            frame_queue.queue.clear()
+            frame = cv2.resize(frame, (480, 320))
+            buffer = frame_queue.qsize()
+            if i == 25:
+                print('buffer ', buffer) #print(f'buffer \r{buffer}', end='', flush=True)
+                i = 0
+            if buffer == 100:
+                frame_queue.queue.clear()
             frame_queue.put(frame)
 
-            # calculate the time to sleep
             elapsed_time = time.time() - start_time
-            sleep_time = max(0.035 - elapsed_time, 0)            #If the elapsed time is greater than 0.04 seconds, we set the sleep time to 0. Otherwise, we set the sleep time to the difference between 0.04 seconds and the elapsed time.
-            #print('APPS sleep_time, elapsed_time', round(sleep_time, 3), round(elapsed_time, 3))
-            time.sleep(sleep_time)
+            if elapsed_time > 0.1:
+                print('update spike..', round(elapsed_time, 3))
+            time.sleep(0.033)
             start_time = time.time()
 
 
@@ -118,4 +124,5 @@ def get_token():
     print(token)
     driver.quit()
     return token
+
 
