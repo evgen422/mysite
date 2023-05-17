@@ -25,7 +25,7 @@ def show_frame():
         #print('views id',threading.get_ident())
         if not frame_queue.empty():
             fps_counter()
-            encoded_frame = frame_queue.get()
+            output = frame_queue.get()
 
 
 
@@ -37,7 +37,7 @@ def show_frame():
             start_time = time.time()
 
             yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + encoded_frame + b'\r\n')
+                   b'Content-Type: image/jpeg\r\n\r\n' +  output.getvalue() + b'\r\n')
 
 
 

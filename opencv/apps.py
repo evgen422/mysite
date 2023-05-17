@@ -26,6 +26,10 @@ from threading import Thread
 from queue import Queue
 frame_queue = Queue()  # Create a new queue to store the frames
 
+from io import BytesIO
+from PIL import Image
+import numpy as np
+
 
 def gen_frames():
     print('get frames: token called...')
@@ -42,7 +46,6 @@ def gen_frames():
     thread.start()
 
 
-#THE RIGHT
 def update(capture):
     print('apps id', threading.get_ident())
     start_time = time.time()
@@ -51,7 +54,7 @@ def update(capture):
         if capture.isOpened():
             i = i+1
             (status, frame) = capture.read()
-            frame = cv2.resize(frame, (480, 320))
+            #frame = cv2.resize(frame, (480, 320))
             buffer = frame_queue.qsize()
             if i == 25:
                 print('buffer ', buffer) #print(f'buffer \r{buffer}', end='', flush=True)
@@ -59,14 +62,21 @@ def update(capture):
             if buffer == 100:
                 frame_queue.queue.clear()
                             # Encode the frame as a JPEG image
-            ret, buffer = cv2.imencode('.jpg', frame)
-            encoded_frame = buffer.tobytes()
-            frame_queue.put(encoded_frame)
+            #ret, buffer = cv2.imencode('.jpg', frame) #THIS CODE SLOWS US DOWN
+            #encoded_frame = buffer.tobytes()
+            # Convert the frame to a PIL Image object
+            im = Image.fromarray(frame)
+
+            # Compress the image
+            im = im.resize((480, 320)) # resize image if needed
+            output = BytesIO()
+            im.save(output, format='JPEG', quality=50)
+            frame_queue.put(output)
 
             elapsed_time = time.time() - start_time
             if elapsed_time > 0.1:
                 print('update spike..', round(elapsed_time, 3))
-            time.sleep(0.03) #(0.033) used to work
+            time.sleep(0.01) #(0.033) used to work
             start_time = time.time()
 
 
