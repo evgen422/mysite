@@ -31,6 +31,7 @@ from PIL import Image
 import numpy as np
 
 global buffer 
+global current_frame
 buffer = []
 
 def gen_frames():
@@ -46,6 +47,29 @@ def gen_frames():
     thread = Thread(target=update, args=(capture,))
     thread.daemon = True
     thread.start()
+
+    thread2 = Thread(target=buffer_f, args=())
+    thread2.daemon = True
+    thread2.start()    
+
+def buffer_f():
+    global buffer
+    global current_frame
+    start_time = time.time()
+    while True:
+        if len(buffer) > 10:
+            current_frame = buffer[0]
+            buffer.pop(0)
+            time.sleep(0.04)
+            print('len', len(buffer))
+
+        if len(buffer) == 100:
+            buffer = []
+
+        elapsed_time = time.time() - start_time
+        print('buffer_f elapsed_time..', round(elapsed_time, 3))
+        start_time = time.time()
+
 
 
 def update(capture):
@@ -66,16 +90,16 @@ def update(capture):
             im.save(output, format='JPEG', quality=50)
 
             buffer.append(output)
-            if len(buffer) == 5:
-                buffer.pop(0)
+            time.sleep(0.01)
+
 
 
             elapsed_time = time.time() - start_time
-            if elapsed_time > 0.1:
-                print('update spike..', round(elapsed_time, 3))
-            time.sleep(0.01) 
+            #if elapsed_time > 0.1:
+            print('update elapsed_time..', round(elapsed_time, 3))
+            #time.sleep(0.01) 
             start_time = time.time()
-            fps_counter()
+            #fps_counter()
 
 time_start = dt.datetime.now()
 i = 0

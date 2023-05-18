@@ -25,8 +25,7 @@ def show_frame():
     #if not frame_queue.empty():
         #fps_counter()
         #output = frame_queue.get()
-        buffer = apps.buffer
-        output = buffer[0]
+        output = apps.current_frame
         time.sleep(0.04)
 
         yield (b'--frame\r\n'
