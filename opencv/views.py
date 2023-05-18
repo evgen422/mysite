@@ -4,11 +4,9 @@ from django.template import loader
 from django.http import StreamingHttpResponse
 
 import time
-import cv2
+#import cv2
 import datetime as dt
-from threading import Thread
-#from opencv.apps import frame_queue
-#from apps import update
+#from threading import Thread
 import opencv.apps as apps
 
 
@@ -25,7 +23,7 @@ def show_frame():
     while True:
         #print('views id',threading.get_ident())
     #if not frame_queue.empty():
-        fps_counter()
+        #fps_counter()
         #output = frame_queue.get()
         buffer = apps.buffer
         output = buffer[0]
@@ -37,7 +35,7 @@ def show_frame():
 
 
 
-
+'''
 time_start = dt.datetime.now()
 i = 0
 def fps_counter():
@@ -50,5 +48,5 @@ def fps_counter():
     if time_gap_ms > 1000:
         print('fps ', i) #print(f'fps \r{i}', end='', flush=True) #
         i = 0
-        time_start = dt.datetime.now()
+        time_start = dt.datetime.now()'''
 

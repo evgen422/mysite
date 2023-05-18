@@ -31,7 +31,6 @@ from PIL import Image
 import numpy as np
 
 global buffer 
-#buffer = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 buffer = []
 
 def gen_frames():
@@ -76,6 +75,21 @@ def update(capture):
                 print('update spike..', round(elapsed_time, 3))
             time.sleep(0.01) 
             start_time = time.time()
+            fps_counter()
+
+time_start = dt.datetime.now()
+i = 0
+def fps_counter():
+    global i
+    global time_start
+    i = i+1
+    time_cycle = dt.datetime.now()
+    time_gap = time_cycle - time_start
+    time_gap_ms = time_gap.total_seconds() * 1000
+    if time_gap_ms > 1000:
+        print('apps fps.. ', i) #print(f'fps \r{i}', end='', flush=True) #
+        i = 0
+        time_start = dt.datetime.now()
 
 
 class OpencvConfig(AppConfig):
