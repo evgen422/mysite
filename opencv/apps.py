@@ -30,6 +30,9 @@ from io import BytesIO
 from PIL import Image
 import numpy as np
 
+global buffer 
+#buffer = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+buffer = []
 
 def gen_frames():
     print('get frames: token called...')
@@ -49,21 +52,12 @@ def gen_frames():
 def update(capture):
     print('apps id', threading.get_ident())
     start_time = time.time()
-    i=0
+    global buffer
     while True:
         if capture.isOpened():
-            i = i+1
+
             (status, frame) = capture.read()
-            #frame = cv2.resize(frame, (480, 320))
-            buffer = frame_queue.qsize()
-            if i == 25:
-                print('buffer ', buffer) #print(f'buffer \r{buffer}', end='', flush=True)
-                i = 0
-            if buffer == 100:
-                frame_queue.queue.clear()
-                            # Encode the frame as a JPEG image
-            #ret, buffer = cv2.imencode('.jpg', frame) #THIS CODE SLOWS US DOWN
-            #encoded_frame = buffer.tobytes()
+
             # Convert the frame to a PIL Image object
             im = Image.fromarray(frame)
 
@@ -71,12 +65,16 @@ def update(capture):
             im = im.resize((480, 320)) # resize image if needed
             output = BytesIO()
             im.save(output, format='JPEG', quality=50)
-            frame_queue.put(output)
+
+            buffer.append(output)
+            if len(buffer) == 5:
+                buffer.pop(0)
+
 
             elapsed_time = time.time() - start_time
             if elapsed_time > 0.1:
                 print('update spike..', round(elapsed_time, 3))
-            time.sleep(0.01) #(0.033) used to work
+            time.sleep(0.01) 
             start_time = time.time()
 
 
@@ -137,5 +135,3 @@ def get_token():
     print(token)
     driver.quit()
     return token
-
-

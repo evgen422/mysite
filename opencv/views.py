@@ -7,7 +7,9 @@ import time
 import cv2
 import datetime as dt
 from threading import Thread
-from opencv.apps import frame_queue
+#from opencv.apps import frame_queue
+#from apps import update
+import opencv.apps as apps
 
 
 # Define the view that renders the HTML template and streams the video
@@ -19,25 +21,18 @@ def index(request):
 
 
 def show_frame():
-    # Convert the encoded image to a byte string and yield it as a response
-    start_time = time.time()
+
     while True:
         #print('views id',threading.get_ident())
-        if not frame_queue.empty():
-            fps_counter()
-            output = frame_queue.get()
+    #if not frame_queue.empty():
+        fps_counter()
+        #output = frame_queue.get()
+        buffer = apps.buffer
+        output = buffer[0]
+        time.sleep(0.04)
 
-
-
-            # calculate the time to sleep
-            elapsed_time = time.time() - start_time
-            if elapsed_time > 0.1:
-                print('VIEWS spike..', elapsed_time)
-            time.sleep(0.039)#used to be 35
-            start_time = time.time()
-
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' +  output.getvalue() + b'\r\n')
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' +  output.getvalue() + b'\r\n')
 
 
 
