@@ -30,52 +30,30 @@ from io import BytesIO
 from PIL import Image
 import numpy as np
 
-global buffer 
-global current_frame
-buffer = []
+import multiprocessing
+# Create a queue to store the pipes
+global PIPE_QUEUE
+PIPE_QUEUE = multiprocessing.Queue()
 
 def gen_frames():
     print('get frames: token called...')
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
-    #if token == 1:
-    token = get_token()
+    token = '2b3bb977f0de4cfda5bc6a83f8f92dda'#get_token()
     url = (f'{url1}{token}')
     print(url)
     capture = cv2.VideoCapture(url)
     capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
+
     # Start the thread to read frames from the video stream
     thread = Thread(target=update, args=(capture,))
     thread.daemon = True
     thread.start()
 
-    thread2 = Thread(target=buffer_f, args=())
-    thread2.daemon = True
-    thread2.start()    
-
-def buffer_f():
-    global buffer
-    global current_frame
-    start_time = time.time()
-    while True:
-        if len(buffer) > 10:
-            current_frame = buffer[0]
-            buffer.pop(0)
-            time.sleep(0.04)
-            print('len', len(buffer))
-
-        if len(buffer) == 100:
-            buffer = []
-
-        elapsed_time = time.time() - start_time
-        print('buffer_f elapsed_time..', round(elapsed_time, 3))
-        start_time = time.time()
-
-
-
 def update(capture):
-    print('apps id', threading.get_ident())
+    BATCH = []
+    
     start_time = time.time()
-    global buffer
+
     while True:
         if capture.isOpened():
 
@@ -88,18 +66,30 @@ def update(capture):
             im = im.resize((480, 320)) # resize image if needed
             output = BytesIO()
             im.save(output, format='JPEG', quality=50)
+            BATCH.append(output)
 
-            buffer.append(output)
-            time.sleep(0.01)
+            if len(BATCH) == 250:
+                # Get a reference to the queue of pipes
+                global PIPE_QUEUE
+                print('qsize', PIPE_QUEUE.qsize())
+
+                # Send the output to all pipes in the queue
+                while not PIPE_QUEUE.empty():
+                    parent_conn = PIPE_QUEUE.get()
+                    parent_conn.send(BATCH)
+
+                    PIPE_QUEUE.put(parent_conn)
+                BATCH = []
 
 
-
+            
+            #time.sleep(0.01)
             elapsed_time = time.time() - start_time
             #if elapsed_time > 0.1:
             print('update elapsed_time..', round(elapsed_time, 3))
-            #time.sleep(0.01) 
+            time.sleep(1) 
             start_time = time.time()
-            #fps_counter()
+            fps_counter()
 
 time_start = dt.datetime.now()
 i = 0
