@@ -13,6 +13,7 @@ import redis
 from PIL import Image
 import io
 import numpy as np
+import pickle
 
 def index(request):
     return render(request, 'opencv.html')
@@ -24,21 +25,23 @@ def video_feed(request):
     r = redis.Redis(host='localhost', port=6379, db=0)
     # Subscribe to the "output" channel
     pubsub = r.pubsub(ignore_subscribe_messages=True)
-    pubsub.subscribe('output')
+    pubsub.subscribe('BATCH')
 
     def stream():
-        for message in pubsub.listen():
-            # Convert the message data to an image
-            im = Image.open(io.BytesIO(message['data']))
-            # Convert the image to JPEG format
-            with io.BytesIO() as output:
-                im.save(output, 'JPEG')
-                frame = output.getvalue()
-            # Send the frame as the HTTP response
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-            time.sleep(0.038)
-            #fps_counter()
+        for BATCH in pubsub.listen():
+            BATCH = pickle.loads(BATCH['data'])
+            for frame in BATCH:
+                # Convert the message data to an image
+                im = Image.open(io.BytesIO(frame.getvalue()))
+                # Convert the image to JPEG format
+                with io.BytesIO() as output:
+                    im.save(output, 'JPEG')
+                    frame = output.getvalue()
+                # Send the frame as the HTTP response
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                time.sleep(0.038)
+                #fps_counter()
 
     return StreamingHttpResponse(stream(), content_type='multipart/x-mixed-replace; boundary=frame')
 

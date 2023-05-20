@@ -31,6 +31,7 @@ from PIL import Image
 import numpy as np
 
 import redis
+import pickle
 
 def gen_frames():
     # Start the thread to read frames from the video stream
@@ -40,7 +41,7 @@ def gen_frames():
 
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
-    token = 'None'
+    token = '53399f7fd52f4f1b982de88bd361af66'
     url = (f'{url1}{token}')
     print(url)
     capture = cv2.VideoCapture(url)
@@ -49,6 +50,7 @@ def update():
     r = redis.Redis(host='localhost', port=6379, db=0)
     
     start_time = time.time()
+    BATCH = []
 
     while True:
         if capture.isOpened():
@@ -62,12 +64,15 @@ def update():
             im = im.resize((480, 320)) # resize image if needed
             output = BytesIO()
             im.save(output, format='JPEG', quality=50)
-            r.publish('output', output.getvalue())
-            #BATCH.append(output)
+            BATCH.append(output)
 
-            #if len(BATCH) == 25:
-            #    r.publish('BATCH', BATCH)
-            #    BATCH = []
+            if len(BATCH) == 25:
+                # Convert the list to bytes
+                batch_bytes = pickle.dumps(BATCH)
+                r.publish('BATCH', batch_bytes)
+                BATCH = []
+            #r.publish('output', output.getvalue())
+
 
 
             
@@ -75,7 +80,7 @@ def update():
             elapsed_time = time.time() - start_time
             #if elapsed_time > 0.1:
             #print('update elapsed_time..', round(elapsed_time, 3))
-            time.sleep(0.012) 
+            #time.sleep(0.012) 
             start_time = time.time()
             #fps_counter()
         else:
