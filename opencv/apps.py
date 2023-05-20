@@ -30,27 +30,23 @@ from io import BytesIO
 from PIL import Image
 import numpy as np
 
-import multiprocessing
-# Create a queue to store the pipes
-global PIPE_QUEUE
-PIPE_QUEUE = multiprocessing.Queue()
+import redis
 
 def gen_frames():
-    print('get frames: token called...')
+    # Start the thread to read frames from the video stream
+    thread = Thread(target=update, args=())
+    thread.daemon = True
+    thread.start()
+
+def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
-    token = '2b3bb977f0de4cfda5bc6a83f8f92dda'#get_token()
+    token = 'None'
     url = (f'{url1}{token}')
     print(url)
     capture = cv2.VideoCapture(url)
     capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
 
-    # Start the thread to read frames from the video stream
-    thread = Thread(target=update, args=(capture,))
-    thread.daemon = True
-    thread.start()
-
-def update(capture):
-    BATCH = []
+    r = redis.Redis(host='localhost', port=6379, db=0)
     
     start_time = time.time()
 
@@ -66,30 +62,29 @@ def update(capture):
             im = im.resize((480, 320)) # resize image if needed
             output = BytesIO()
             im.save(output, format='JPEG', quality=50)
-            BATCH.append(output)
+            r.publish('output', output.getvalue())
+            #BATCH.append(output)
 
-            if len(BATCH) == 250:
-                # Get a reference to the queue of pipes
-                global PIPE_QUEUE
-                print('qsize', PIPE_QUEUE.qsize())
-
-                # Send the output to all pipes in the queue
-                while not PIPE_QUEUE.empty():
-                    parent_conn = PIPE_QUEUE.get()
-                    parent_conn.send(BATCH)
-
-                    PIPE_QUEUE.put(parent_conn)
-                BATCH = []
+            #if len(BATCH) == 25:
+            #    r.publish('BATCH', BATCH)
+            #    BATCH = []
 
 
             
             #time.sleep(0.01)
             elapsed_time = time.time() - start_time
             #if elapsed_time > 0.1:
-            print('update elapsed_time..', round(elapsed_time, 3))
-            time.sleep(1) 
+            #print('update elapsed_time..', round(elapsed_time, 3))
+            time.sleep(0.012) 
             start_time = time.time()
-            fps_counter()
+            #fps_counter()
+        else:
+            print('else')
+            token = get_token()
+            url = (f'{url1}{token}')
+            print(url)
+            capture = cv2.VideoCapture(url)
+            capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
 
 time_start = dt.datetime.now()
 i = 0
@@ -129,7 +124,7 @@ def get_token():
 
     # Find the element with the event listener
     element = driver.find_element(By.XPATH, '/html/body/div[2]/div/div[2]/div[1]/div[2]/div[3]/img[227]')
-    #element = driver.find_element_by_xpath('/html/body/div[2]/div/div[2]/div[1]/div[2]/div[3]/img[227]')
+
     time.sleep(1)
 
     # Click the element to trigger the event listener

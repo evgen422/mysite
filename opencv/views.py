@@ -4,36 +4,43 @@ from django.template import loader
 from django.http import StreamingHttpResponse
 
 import time
-#import cv2
+import cv2
 import datetime as dt
 #from threading import Thread
 import opencv.apps as apps
 import multiprocessing
+import redis
+from PIL import Image
+import io
+import numpy as np
 
 def index(request):
     return render(request, 'opencv.html')
 
 # Define the view that renders the HTML template and streams the video
 def video_feed(request):
+    print('new instance of video_feed.....')
+    # Connect to Redis
+    r = redis.Redis(host='localhost', port=6379, db=0)
+    # Subscribe to the "output" channel
+    pubsub = r.pubsub(ignore_subscribe_messages=True)
+    pubsub.subscribe('output')
 
-    # Create a new pipe for this process
-    parent_conn, child_conn = multiprocessing.Pipe()
-
-    # Add the new pipe to the queue in apps.py
-    apps.PIPE_QUEUE.put(parent_conn)
-
-    return StreamingHttpResponse(show_frame(child_conn), content_type='multipart/x-mixed-replace; boundary=frame')
-
-
-def show_frame(child_conn):
-
-    while True:
-        BATCH = child_conn.recv()
-        for output in BATCH:
-            time.sleep(0.035)
-            fps_counter()
+    def stream():
+        for message in pubsub.listen():
+            # Convert the message data to an image
+            im = Image.open(io.BytesIO(message['data']))
+            # Convert the image to JPEG format
+            with io.BytesIO() as output:
+                im.save(output, 'JPEG')
+                frame = output.getvalue()
+            # Send the frame as the HTTP response
             yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' +  output.getvalue() + b'\r\n')
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            time.sleep(0.038)
+            #fps_counter()
+
+    return StreamingHttpResponse(stream(), content_type='multipart/x-mixed-replace; boundary=frame')
 
 
 
@@ -51,4 +58,3 @@ def fps_counter():
         print('fps views ', i) #print(f'fps \r{i}', end='', flush=True) #
         i = 0
         time_start = dt.datetime.now()
-
