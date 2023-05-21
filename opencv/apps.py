@@ -33,6 +33,8 @@ import numpy as np
 import redis
 import pickle
 import concurrent.futures
+from queue import Queue
+SWITCH_COUNTING_FRAMES_QUEUE = Queue()
 
 def gen_frames():
     # Start the thread to read frames from the video stream
@@ -48,11 +50,11 @@ def process_frame(frame):
     im = im.resize((480, 320)) # resize image if needed
     output = BytesIO()
     im.save(output, format='JPEG', quality=50) # reduce the quality
-    return output
+    return output.getvalue()
 
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
-    token = '73cec74146a54369943538779e7dfddd'
+    token = 'aae3cff77208441eb088aea55e123d96'
     url = (f'{url1}{token}')
     print(url)
     capture = cv2.VideoCapture(url)
@@ -64,9 +66,8 @@ def update():
     BATCH = []
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        while True:
+        while True:                         
             if capture.isOpened():
-
                 (status, frame) = capture.read()
 
                 # Process the frame asynchronously
@@ -74,21 +75,22 @@ def update():
 
                 BATCH.append(future)
 
-                if len(BATCH) == 50:
+                if len(BATCH) == 30:
                     # Wait for all the futures to complete
                     results = [b.result() for b in BATCH]
                     # Convert the list to bytes
                     batch_bytes = pickle.dumps(results)
+
                     r.publish('BATCH', batch_bytes)
+                    #c = c + 30
+                    #print('total in: ', c)
                     BATCH = []
                         
-                #time.sleep(0.01)
-                elapsed_time = time.time() - start_time
-                #if elapsed_time > 0.1:
-                #print('update elapsed_time..', round(elapsed_time, 3))
-                time.sleep(0.02) 
-                start_time = time.time()
+                    #elapsed_time = time.time() - start_time
+                    #print('update elapsed_time 1 sec..', round(elapsed_time, 3))
+                    #start_time = time.time()
                 fps_counter()
+                time.sleep(0.03)
             else:
                 print('else')
                 token = get_token()
@@ -107,7 +109,7 @@ def fps_counter():
     time_gap = time_cycle - time_start
     time_gap_ms = time_gap.total_seconds() * 1000
     if time_gap_ms > 10000:
-        print('apps fps.. ', i) #print(f'fps \r{i}', end='', flush=True) #
+        print('apps fps.. ', int(round((i/10), 0))) 
         i = 0
         time_start = dt.datetime.now()
 
