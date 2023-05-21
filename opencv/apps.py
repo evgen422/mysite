@@ -32,6 +32,7 @@ import numpy as np
 
 import redis
 import pickle
+import concurrent.futures
 
 def gen_frames():
     # Start the thread to read frames from the video stream
@@ -39,9 +40,19 @@ def gen_frames():
     thread.daemon = True
     thread.start()
 
+def process_frame(frame):
+        # Convert the frame to a PIL Image object
+    im = Image.fromarray(frame)
+
+    # Compress the image
+    im = im.resize((480, 320)) # resize image if needed
+    output = BytesIO()
+    im.save(output, format='JPEG', quality=50) # reduce the quality
+    return output
+
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
-    token = '53399f7fd52f4f1b982de88bd361af66'
+    token = '73cec74146a54369943538779e7dfddd'
     url = (f'{url1}{token}')
     print(url)
     capture = cv2.VideoCapture(url)
@@ -52,44 +63,39 @@ def update():
     start_time = time.time()
     BATCH = []
 
-    while True:
-        if capture.isOpened():
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        while True:
+            if capture.isOpened():
 
-            (status, frame) = capture.read()
+                (status, frame) = capture.read()
 
-            # Convert the frame to a PIL Image object
-            im = Image.fromarray(frame)
+                # Process the frame asynchronously
+                future = executor.submit(process_frame, frame)
 
-            # Compress the image
-            im = im.resize((480, 320)) # resize image if needed
-            output = BytesIO()
-            im.save(output, format='JPEG', quality=50)
-            BATCH.append(output)
+                BATCH.append(future)
 
-            if len(BATCH) == 25:
-                # Convert the list to bytes
-                batch_bytes = pickle.dumps(BATCH)
-                r.publish('BATCH', batch_bytes)
-                BATCH = []
-            #r.publish('output', output.getvalue())
-
-
-
-            
-            #time.sleep(0.01)
-            elapsed_time = time.time() - start_time
-            #if elapsed_time > 0.1:
-            #print('update elapsed_time..', round(elapsed_time, 3))
-            #time.sleep(0.012) 
-            start_time = time.time()
-            #fps_counter()
-        else:
-            print('else')
-            token = get_token()
-            url = (f'{url1}{token}')
-            print(url)
-            capture = cv2.VideoCapture(url)
-            capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
+                if len(BATCH) == 50:
+                    # Wait for all the futures to complete
+                    results = [b.result() for b in BATCH]
+                    # Convert the list to bytes
+                    batch_bytes = pickle.dumps(results)
+                    r.publish('BATCH', batch_bytes)
+                    BATCH = []
+                        
+                #time.sleep(0.01)
+                elapsed_time = time.time() - start_time
+                #if elapsed_time > 0.1:
+                #print('update elapsed_time..', round(elapsed_time, 3))
+                time.sleep(0.02) 
+                start_time = time.time()
+                fps_counter()
+            else:
+                print('else')
+                token = get_token()
+                url = (f'{url1}{token}')
+                print(url)
+                capture = cv2.VideoCapture(url)
+                capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
 
 time_start = dt.datetime.now()
 i = 0
@@ -100,7 +106,7 @@ def fps_counter():
     time_cycle = dt.datetime.now()
     time_gap = time_cycle - time_start
     time_gap_ms = time_gap.total_seconds() * 1000
-    if time_gap_ms > 1000:
+    if time_gap_ms > 10000:
         print('apps fps.. ', i) #print(f'fps \r{i}', end='', flush=True) #
         i = 0
         time_start = dt.datetime.now()
