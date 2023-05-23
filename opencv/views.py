@@ -14,6 +14,7 @@ from PIL import Image
 import io
 import numpy as np
 import pickle
+global buffer
 buffer = []
 from threading import Thread
 import threading
@@ -27,8 +28,9 @@ def video_feed(request):
     print('new instance of video_feed.....')
 
     def stream():
+        global buffer
         while True:
-            while len(buffer) > 0:
+            if len(buffer) > 0:
                 frame = buffer[0]               
                 buffer.pop(0)
                 print('len', len(buffer))
@@ -37,11 +39,17 @@ def video_feed(request):
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')#used to be frame
                 time.sleep(0.035)
+                if len(buffer) > 100:
+                    buffer = []
 
-
+    if len(buffer) > 0:
+        t = Thread(target=stream)
+        t.daemon = True
+        t.start()
     
 
     def consume_redis():
+        global buffer
         # Connect to Redis
         r = redis.Redis(host='localhost', port=6379, db=0)
 
