@@ -54,7 +54,7 @@ def process_frame(frame):
 
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
-    token = 'dd97591a5ef64430ac582680cb4f380e'
+    token = 'a18b7b7f6b214347873bc02290e89e63'
     url = (f'{url1}{token}')
     print(url)
     capture = cv2.VideoCapture(url)
@@ -81,7 +81,12 @@ def update():
                     # Convert the list to bytes
                     batch_bytes = pickle.dumps(results)
 
-                    r.publish('BATCH', batch_bytes)
+                    # Set the TTL for the key to 10 seconds
+                    EXPIRE_TIME = 10
+
+                    # Publish the batch of frames to Redis
+                    r.publish('BATCH', batch_bytes, ex=EXPIRE_TIME)
+
                     #c = c + 30
                     #print('total in: ', c)
                     BATCH = []
