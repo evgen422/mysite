@@ -23,6 +23,10 @@ user_buffers = {}
 def index(request):
     return render(request, 'opencv.html')
 
+def ping(request):
+    print(request.POST)
+    return HttpResponse('pong')
+
 # Define the view that renders the HTML template and streams the video
 def video_feed(request):
     # Create a new buffer for the user if one does not already exist
@@ -70,8 +74,8 @@ def video_feed(request):
                     if user_id in user_buffers:
                         buffer.append(frame)
 
-                    for key in user_buffers.keys():
-                        print(key, len(user_buffers[key]))
+                    #for key in user_buffers.keys():
+                    #    print(key, len(user_buffers[key]))#here i was testing what buffer looks like
 
                     if len(buffer) > 100:
                         print('ALERT 100')
@@ -101,3 +105,30 @@ def fps_counter():
         print('fps views ', int(round((i/10), 0))) #print(f'fps \r{i}', end='', flush=True) #
         i = 0
         time_start = dt.datetime.now()
+
+'''
+def ping(request):
+    user_id = # get user ID here
+    if user_id not in user_buffers:
+        user_buffers[user_id] = queue.Queue()
+
+    # start consuming Redis messages
+    redis_thread = threading.Thread(target=consume_redis, args=(user_buffers[user_id],))
+    redis_thread.daemon = True
+    redis_thread.start()
+
+    # function to stop Redis thread after 10 seconds of inactivity
+    def stop_redis_thread():
+        # check if there have been any "ping" messages in the last 10 seconds
+        if 'ping' not in user_buffers[user_id].queue:
+            # no "ping" messages received, stop Redis thread
+            user_buffers[user_id].put(None)  # signal thread to exit
+            redis_thread.join()  # wait for thread to exit
+            print('Redis thread stopped')
+
+    # schedule stop_redis_thread() to run after 10 seconds
+    threading.Timer(10.0, stop_redis_thread).start()
+
+    return HttpResponse('OK')
+
+'''

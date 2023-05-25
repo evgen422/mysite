@@ -2,6 +2,9 @@
 {% load widget_tweaks %}
 {% load static %}
 {% block content %}
+<form method="post">
+    {% csrf_token %}
+</form>
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,6 +16,20 @@
     </body>
 </html>
 
+<script type="text/javascript">
+  function sendPing() {
+    $.ajax({
+      type: "POST",
+      url: "{% url 'ping' %}",
+      data: { 
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+        'ping': 'ping'
+      }
+    });
+  }
 
+  // Call sendPing() every 10 seconds
+  setInterval(sendPing, 10000);
+</script>
 
 {% endblock %}

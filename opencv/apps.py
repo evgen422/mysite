@@ -54,7 +54,7 @@ def process_frame(frame):
 
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
-    token = 'a18b7b7f6b214347873bc02290e89e63'
+    token = 'ce4c6b16a1ab435e8ce99073111f5ad2'
     url = (f'{url1}{token}')
     print(url)
     capture = cv2.VideoCapture(url)
