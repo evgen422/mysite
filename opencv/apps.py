@@ -54,7 +54,7 @@ def process_frame(frame):
 
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
-    token = 'f0e08908294c4ded872aec10ef120291'
+    token = '3f1112dea70347c8bf7d6cc772bb3654'
     url = (f'{url1}{token}')
     print(url)
     capture = cv2.VideoCapture(url)
@@ -95,7 +95,7 @@ def update():
                     #print('update elapsed_time 1 sec..', round(elapsed_time, 3))
                     #start_time = time.time()
                 fps_counter()
-                time.sleep(0.02)
+                time.sleep(0.03)
             else:
                 print('else')
                 token = get_token()

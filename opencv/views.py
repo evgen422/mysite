@@ -57,7 +57,7 @@ def video_feed(request, user_id):
             if len(buffer) > 0:
                 frame = buffer[0]               
                 buffer.pop(0)
-                print('len', len(buffer))
+                #print('len', len(buffer))
                 fps_counter()
                 # Send the frame as the HTTP response
                 yield (b'--frame\r\n'
@@ -76,32 +76,31 @@ def consume_redis(buffer, user_id):
     pubsub.subscribe('BATCH')
     start_time = time.time()
     for BATCH in pubsub.listen():
-        print('REDIS IS RUNNING')
-        if not len(user_pings[user_id]) == 0:
-            # Stop listening if the thread has been terminated
-            if not threading.current_thread().is_alive():
+        elapsed_time = time.time() - start_time
+        #print('LISTEN elapsed_time 10 sec..', round(elapsed_time, 3))
+        #check if client disconnected
+        if elapsed_time > 9:
+            if len(user_pings[user_id]) == 0:
+                # Unsubscribe from the channel and clean up the connection
+                pubsub.unsubscribe('BATCH')
+                r.connection_pool.disconnect()
+                print('breaking...')
                 break
-            #elapsed_time = time.time() - start_time
-            #print('LISTEN elapsed_time 1 sec..', round(elapsed_time, 3))
-            #start_time = time.time()
-            BATCH = pickle.loads(BATCH['data'])
-            #c = c + 30
-            #print('total out: ', c)
-            for frame in BATCH:
-                buffer.append(frame)
+            else:
+                user_pings[user_id] = []
+                start_time = time.time()
 
-                if len(buffer) > 500:
-                    print('ALERT 500')
-                    buffer = []
+
+        BATCH = pickle.loads(BATCH['data'])
+
+        for frame in BATCH:
+            buffer.append(frame)
+
+            if len(buffer) > 500:
+                print('ALERT 500')
+                buffer = []
              
-        else:
-            # Unsubscribe from the channel and clean up the connection
-            pubsub.unsubscribe('BATCH')
-            r.connection_pool.disconnect()
-            print('breaking...')
-            break
 
-        user_pings[user_id] = []
 
 
 
@@ -113,6 +112,7 @@ def ping(request):
     user_id = request.POST.get("user_id")
     ping = request.POST.get("ping")
     user_pings[user_id].append(ping)
+    print('len', len(user_buffers[user_id]))
 
     return HttpResponse('OK')
 
