@@ -50,10 +50,9 @@ def video_feed(request, user_id):
         buffer = user_buffers[user_id]
         while True:
             #print('cheeeck user_pings...', user_pings[user_id])
-            #if redis_thread.is_alive():
-            #    print('alive')
-            #else:
-            #    print('dead')
+            if not redis_thread.is_alive():
+                print('dead')
+                break
 
             if len(buffer) > 0:
                 frame = buffer[0]               

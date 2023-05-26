@@ -54,7 +54,7 @@ def process_frame(frame):
 
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
-    token = 'fefc6a2182934d8f90718ac633248ed7'
+    token = 'fefc6a2182934d8f90718ac633248ed6'
     url = (f'{url1}{token}')
     print(url)
     capture = cv2.VideoCapture(url)
@@ -141,7 +141,7 @@ def get_token():
 
 
     # Find the element with the event listener
-    element = driver.find_element(By.XPATH, '/html/body/div[2]/div/div[2]/div[1]/div[2]/div[3]/img[227]')
+    element = driver.find_element(By.XPATH, '/html/body/div[2]/div/div[2]/div[1]/div[2]/div[3]/img[226]')
 
     time.sleep(1)
 
