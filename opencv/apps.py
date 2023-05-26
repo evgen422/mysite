@@ -54,7 +54,7 @@ def process_frame(frame):
 
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
-    token = 'fefc6a2182934d8f90718ac633248ed6'
+    token = 'f0e08908294c4ded872aec10ef120291'
     url = (f'{url1}{token}')
     print(url)
     capture = cv2.VideoCapture(url)
@@ -75,7 +75,7 @@ def update():
 
                 BATCH.append(future)
 
-                if len(BATCH) == 30:
+                if len(BATCH) == 50:
                     # Wait for all the futures to complete
                     results = [b.result() for b in BATCH]
                     # Convert the list to bytes
@@ -95,7 +95,7 @@ def update():
                     #print('update elapsed_time 1 sec..', round(elapsed_time, 3))
                     #start_time = time.time()
                 fps_counter()
-                time.sleep(0.03)
+                time.sleep(0.02)
             else:
                 print('else')
                 token = get_token()

@@ -46,7 +46,7 @@ def video_feed(request, user_id):
         redis_thread.start()
 
     print('user_id video_feed', user_id)
-    def stream():
+    def stream(redis_thread):
         buffer = user_buffers[user_id]
         while True:
             #print('cheeeck user_pings...', user_pings[user_id])
@@ -57,14 +57,14 @@ def video_feed(request, user_id):
             if len(buffer) > 0:
                 frame = buffer[0]               
                 buffer.pop(0)
-                #print('len', len(buffer))
+                print('len', len(buffer))
                 fps_counter()
                 # Send the frame as the HTTP response
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')#used to be frame
-                time.sleep(0.035) #35 for server
+                time.sleep(0.037) # 20/37 for laptop
 
-    return StreamingHttpResponse(stream(), content_type='multipart/x-mixed-replace; boundary=frame')
+    return StreamingHttpResponse(stream(redis_thread), content_type='multipart/x-mixed-replace; boundary=frame')
     
 
 def consume_redis(buffer, user_id):
@@ -90,8 +90,8 @@ def consume_redis(buffer, user_id):
             for frame in BATCH:
                 buffer.append(frame)
 
-                if len(buffer) > 100:
-                    print('ALERT 100')
+                if len(buffer) > 500:
+                    print('ALERT 500')
                     buffer = []
              
         else:
@@ -106,6 +106,10 @@ def consume_redis(buffer, user_id):
 
 
 def ping(request):
+    user_id = request.POST.get('user_id')
+    if user_id not in user_buffers:
+        user_buffers[user_id] = []
+        user_pings[user_id] = []
     user_id = request.POST.get("user_id")
     ping = request.POST.get("ping")
     user_pings[user_id].append(ping)
