@@ -12,7 +12,7 @@
     </head>
     <body>
         <h1>OpenCV Video Stream</h1>
-        <img src="{% url 'video_feed' %}" />
+        <img src="{% url 'video_feed'  user_id=user_id %}" />
     </body>
 </html>
 
@@ -23,13 +23,20 @@
       url: "{% url 'ping' %}",
       data: { 
         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
-        'ping': 'ping'
+        'ping': 'ping',
+        'user_id': '{{ user_id }}',
       }
     });
   }
 
   // Call sendPing() every 10 seconds
-  setInterval(sendPing, 10000);
+  setInterval(sendPing, 900);
+
+  // Get the user ID from the HTML template
+  var userId = "{{ user_id }}";
+
+  // Log the user ID to the console
+  console.log("User ID:", userId);
 </script>
 
 {% endblock %}

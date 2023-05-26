@@ -6,7 +6,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('video_feed', views.video_feed, name='video_feed'),
+    path('opencv/video_feed/<str:user_id>/', video_feed, name='video_feed'),
     path('ping/', views.ping, name='ping'),
 
 ]
