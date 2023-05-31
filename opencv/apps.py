@@ -41,7 +41,7 @@ def gen_frames():
     thread = Thread(target=update, args=())
     thread.daemon = True
     thread.start()
-
+'''
 def process_frame(frame):
         # Convert the frame to a PIL Image object
     im = Image.fromarray(frame)
@@ -51,58 +51,67 @@ def process_frame(frame):
     output = BytesIO()
     im.save(output, format='JPEG', quality=50) # reduce the quality
     return output.getvalue()
-
+'''
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
     token = '3f1112dea70347c8bf7d6cc772bb3654'
     url = (f'{url1}{token}')
     print(url)
+    rtmpUrl = 'rtmp://localhost:1935/live/test'
     capture = cv2.VideoCapture(url)
     capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
+    # Set video dimensions
+    width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    r = redis.Redis(host='localhost', port=6379, db=0)
+    # Define video writer and codec
+    fourcc = cv2.VideoWriter_fourcc(*"h264")
+    out = cv2.VideoWriter(rtmpUrl, fourcc, 20.0, (width, height),True)
+
+    #r = redis.Redis(host='localhost', port=6379, db=0)
     
     start_time = time.time()
     BATCH = []
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        while True:                         
-            if capture.isOpened():
-                (status, frame) = capture.read()
+    #with concurrent.futures.ThreadPoolExecutor() as executor:
+    while True:                         
+        if capture.isOpened():
+            (status, frame) = capture.read()
+            out.write(frame)
 
-                # Process the frame asynchronously
-                future = executor.submit(process_frame, frame)
+            # Process the frame asynchronously
+            #future = executor.submit(process_frame, frame)
+'''
+            BATCH.append(future)
 
-                BATCH.append(future)
+            if len(BATCH) == 50:
+                # Wait for all the futures to complete
+                results = [b.result() for b in BATCH]
+                # Convert the list to bytes
+                batch_bytes = pickle.dumps(results)
 
-                if len(BATCH) == 50:
-                    # Wait for all the futures to complete
-                    results = [b.result() for b in BATCH]
-                    # Convert the list to bytes
-                    batch_bytes = pickle.dumps(results)
+                # Set the TTL for the key to 10 seconds
+                EXPIRE_TIME = 10
 
-                    # Set the TTL for the key to 10 seconds
-                    EXPIRE_TIME = 10
+                # Publish the batch of frames to Redis
+                r.publish('BATCH', batch_bytes, ex=EXPIRE_TIME)
 
-                    # Publish the batch of frames to Redis
-                    r.publish('BATCH', batch_bytes, ex=EXPIRE_TIME)
-
-                    #c = c + 30
-                    #print('total in: ', c)
-                    BATCH = []
-                        
-                    #elapsed_time = time.time() - start_time
-                    #print('update elapsed_time 1 sec..', round(elapsed_time, 3))
-                    #start_time = time.time()
-                fps_counter()
-                time.sleep(0.03)
-            else:
-                print('else')
-                token = get_token()
-                url = (f'{url1}{token}')
-                print(url)
-                capture = cv2.VideoCapture(url)
-                capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
+                #c = c + 30
+                #print('total in: ', c)
+                BATCH = []
+                    
+                #elapsed_time = time.time() - start_time
+                #print('update elapsed_time 1 sec..', round(elapsed_time, 3))
+                #start_time = time.time()'''
+            fps_counter()
+            time.sleep(0.03)
+        else:
+            print('else')
+            token = get_token()
+            url = (f'{url1}{token}')
+            print(url)
+            capture = cv2.VideoCapture(url)
+            capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
 
 time_start = dt.datetime.now()
 i = 0
@@ -176,3 +185,126 @@ def get_token():
     print(token)
     driver.quit()
     return token
+
+--------------------------------
+To stream video frames from OpenCV to NGINX, you will need to encode the video frames into a suitable format like H264 or VP8 and then send the encoded video frames to NGINX via RTMP.
+
+Here is a basic approach to do that:
+
+1. Use OpenCV to capture the video frames from a file or webcam.
+
+   ```python
+     import cv2
+     
+     cap = cv2.VideoCapture(0)
+   ```
+
+2. Define the RTMP URL where you want to send the video frames.
+
+   ```python
+     rtmpUrl = 'rtmp://localhost:1935/live/test'
+   ```
+
+3. Initialize the video writer to encode the video frames into H264 format and send them to the RTMP URL.
+
+   ```python
+     # Set video dimensions
+     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+     # Define video writer and codec
+     fourcc = cv2.VideoWriter_fourcc(*"h264")
+     out = cv2.VideoWriter(rtmpUrl, fourcc, 20.0, (width, height),True)
+
+     while True:
+          ret, frame = cap.read()
+          if not ret:
+               break
+          out.write(frame)
+          cv2.imshow('frame', frame)
+          if cv2.waitKey(1) & 0xFF == ord('q'):
+               break
+
+     # Release resources
+     cap.release()
+     out.release()
+     cv2.destroyAllWindows()
+   ```
+
+4. Run the above script to capture the video frames, encode them, and send them to the RTMP URL.
+
+5. On the NGINX server, install the RTMP module and configure it to listen on the port 1935.
+
+6. Start the NGINX RTMP service, and when you run the script to capture and stream the video frames, they will be sent to the specified RTMP URL.
+
+7. To view the video stream, embed a player on a web page that points to the RTMP URL.
+
+Note: The above code is an illustrative example only and not intended for production use. You should optimize it and add error-handling code before deploying it in production.
+------------------------------------------------------
+
+
+
+3. Write your Django views that use OpenCV to process the frames.
+
+    ```python
+    import cv2
+
+    def process_frame(frame):
+        # add your OpenCV processing code here
+        return processed_frame
+
+    def capture_frame(request):
+        # capture frame from webcam
+        cap = cv2.VideoCapture(0)
+        # read and process a single frame
+        ret, frame = cap.read()
+        processed_frame = process_frame(frame)
+        # release the webcam resource
+        cap.release()
+        # return the processed frame as an HTTP response
+        return HttpResponse(processed_frame)
+    ```
+
+4. Update your Django's app `urls.py` :
+
+    ```python
+    from django.urls import path
+    from .views import capture_frame
+
+    urlpatterns = [
+        path('capture_frame/', capture_frame, name='capture_frame'),
+    ]
+    ```
+    
+5. Configure NGINX to serve your Django app and proxy HTTP requests for `/opencv` to your Django app.
+
+    ```nginx
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            include proxy_params;
+            proxy_pass http://unix:/run/gunicorn.sock;
+        }
+
+        location /opencv {
+            include proxy_params;
+            proxy_pass http://unix:/run/gunicorn.sock;
+        }
+    }
+    ```
+  
+6. Start the Django development server and check if your views are working fine:
+
+    ```bash
+    python manage.py runserver 0.0.0.0:8000
+    ```
+
+7. Start the NGINX service to serve the Django app and process the frames:
+
+    ```bash
+    systemctl restart nginx
+    ```
+
+Now you should be able to access `http://example.com/opencv/capture_frame/` which will process the frames using OpenCV and return the processed frames as an HTTP response.
