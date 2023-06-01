@@ -40,9 +40,9 @@ import subprocess as sp
 def gen_frames():
     # Start the thread to read frames from the video stream
     print('PLUG......................................')
-    #thread = Thread(target=update, args=())
-    #thread.daemon = True
-    #thread.start()
+    thread = Thread(target=update, args=())
+    thread.daemon = True
+    thread.start()
 
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
