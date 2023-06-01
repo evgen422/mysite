@@ -34,7 +34,6 @@ import redis
 import pickle
 import concurrent.futures
 from queue import Queue
-SWITCH_COUNTING_FRAMES_QUEUE = Queue()
 import ffmpeg
 import subprocess as sp
 
@@ -43,51 +42,21 @@ def gen_frames():
     thread = Thread(target=update, args=())
     thread.daemon = True
     thread.start()
-'''
-def process_frame(frame):
-        # Convert the frame to a PIL Image object
-    im = Image.fromarray(frame)
 
-    # Compress the image
-    im = im.resize((480, 320)) # resize image if needed
-    output = BytesIO()
-    im.save(output, format='JPEG', quality=50) # reduce the quality
-    return output.getvalue()
-'''
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
-    token = '42b4700551c94a3ba50fe791fe18df63'
+    token = '7184777f211c474886b0b30a9ea0e08b+'
     url = (f'{url1}{token}')
     print(url)
     rtmp_Url = 'rtmp://95.140.153.88:1935/live/opencv'
-    bitrate = 2000000  # Set the bitrate (bits per second) of the stream
-    #fps = 25  # Set the frame rate of the stream
+
     capture = cv2.VideoCapture(url)
     capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
-    #capture.set(cv2.CAP_PROP_FPS, fps)
-    # Set video dimensions
-    width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    # Set up the ffmpeg process with the RTMP output
-    '''THIS CODE WORKS BUT DOES 10 FPS AND TELLS THAT SPEED IS 1.6
-    process = (
-        ffmpeg
-        .input('pipe:', r='6')
-        .output(rtmp_Url, vcodec='libx264', pix_fmt='yuv420p', preset='veryfast',
-        r='20', g='50', video_bitrate='1.4M', maxrate='2M', bufsize='2M', segment_time='6',
-        format='flv')
-        .run_async(pipe_stdin=True)
-    )'''
-    sizeStr = str(int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))) + \
-        'x' + str(int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-    fps = int(capture.get(cv2.CAP_PROP_FPS))
-
-    print(sizeStr, fps)
     command = ['ffmpeg',
            '-re',
-           '-s', sizeStr,
-           '-r', str(fps),  # rtsp fps (from input server)
+           '-s', "720x420",
+           '-r', '25', 
            '-i', '-',
            
            # You can change ffmpeg parameter after this item.
@@ -109,14 +78,16 @@ def update():
 
     
     start_time = time.time()
-    new_size = (720, 480)#(480, 320)
+    new_size = (720, 420)
 
     while True:                         
         if capture.isOpened():
             (status, frame0) = capture.read()
+
             frame = cv2.resize(frame0, new_size)
             ret2, frame2 = cv2.imencode('.png', frame)
             process.stdin.write(frame2.tobytes())
+
 
             #fps_counter()
             #time.sleep(0.03)
@@ -125,10 +96,10 @@ def update():
             token = get_token()
             url = (f'{url1}{token}')
             print(url)
+
             capture = cv2.VideoCapture(url)
             capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
-        #process.stdin.close()
-        #process.wait()
+
 
 time_start = dt.datetime.now()
 i = 0
