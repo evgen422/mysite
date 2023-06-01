@@ -39,9 +39,10 @@ import subprocess as sp
 
 def gen_frames():
     # Start the thread to read frames from the video stream
-    thread = Thread(target=update, args=())
-    thread.daemon = True
-    thread.start()
+    print('PLUG......................................')
+    #thread = Thread(target=update, args=())
+    #thread.daemon = True
+    #thread.start()
 
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
@@ -79,19 +80,16 @@ def update():
     
     start_time = time.time()
     new_size = (720, 420)
-
+    
     while True:                         
-        if capture.isOpened():
+        try:#if capture.isOpened():
             (status, frame0) = capture.read()
 
             frame = cv2.resize(frame0, new_size)
             ret2, frame2 = cv2.imencode('.png', frame)
             process.stdin.write(frame2.tobytes())
 
-
-            #fps_counter()
-            #time.sleep(0.03)
-        else:
+        except:#else:
             print('else')
             token = get_token()
             url = (f'{url1}{token}')
@@ -99,22 +97,6 @@ def update():
 
             capture = cv2.VideoCapture(url)
             capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
-
-
-time_start = dt.datetime.now()
-i = 0
-def fps_counter():
-    global i
-    global time_start
-    i = i+1
-    time_cycle = dt.datetime.now()
-    time_gap = time_cycle - time_start
-    time_gap_ms = time_gap.total_seconds() * 1000
-    if time_gap_ms > 10000:
-        print('apps fps.. ', int(round((i/10), 0))) 
-        i = 0
-        time_start = dt.datetime.now()
-
 
 class OpencvConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'

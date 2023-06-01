@@ -19,22 +19,20 @@ import threading
 import uuid
 import queue
 import sys
-#WORKS////////////////////////// //////////////////////////////////+++++++++++++++++++++++++++++++++++++++++++++++++++
-user_buffers = {}
-user_pings = {}
+
 
 def index(request):
     # Create a new buffer for the user if one does not already exist
-    user_id = str(uuid.uuid4())
-    print('user_id', user_id)
-    if user_id not in user_buffers:
-        user_buffers[user_id] = []
-    context = {           
-        'user_id': user_id,
-    }
-    return render(request, 'opencv.html', context)
+    #user_id = str(uuid.uuid4())
+    #print('user_id', user_id)
+    #if user_id not in user_buffers:
+    #    user_buffers[user_id] = []
+    #context = {           
+    #    'user_id': user_id,
+    #}
+    return render(request, 'opencv.html')
 
-
+'''
 # Define the view that renders the HTML template and streams the video
 def video_feed(request, user_id):
     if user_id not in user_pings:
@@ -65,8 +63,8 @@ def video_feed(request, user_id):
                 time.sleep(0.037) # 20/37 for laptop
 
     return StreamingHttpResponse(stream(redis_thread), content_type='multipart/x-mixed-replace; boundary=frame')
-    
-
+'''    
+'''
 def consume_redis(buffer, user_id):
     # Connect to Redis
     r = redis.Redis(host='localhost', port=6379, db=0)
@@ -99,11 +97,11 @@ def consume_redis(buffer, user_id):
             if len(buffer) > 500:
                 print('ALERT 500')
                 buffer = []
-             
+'''             
 
 
 
-
+'''
 def ping(request):
     user_id = request.POST.get('user_id')
     if user_id not in user_buffers:
@@ -116,14 +114,14 @@ def ping(request):
 
     return HttpResponse('OK')
 
+'''
 
 
 
 
 
 
-
-
+'''
 time_start = dt.datetime.now()
 i = 0
 def fps_counter():
@@ -138,3 +136,4 @@ def fps_counter():
         i = 0
         time_start = dt.datetime.now()
 
+'''

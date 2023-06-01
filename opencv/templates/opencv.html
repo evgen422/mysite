@@ -2,41 +2,26 @@
 {% load widget_tweaks %}
 {% load static %}
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-</form>
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>OpenCV Video Stream</title>
-    </head>
-    <body>
-        <h1>OpenCV Video Stream</h1>
-        <img src="{% url 'video_feed'  user_id=user_id %}" />
-    </body>
-</html>
 
-<script type="text/javascript">
-  function sendPing() {
-    $.ajax({
-      type: "POST",
-      url: "{% url 'ping' %}",
-      data: { 
-        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
-        'ping': 'ping',
-        'user_id': '{{ user_id }}',
-      }
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+
+<body>
+    <video id="video" controls></video>
+</body>
+
+<script>
+  if (Hls.isSupported()) {
+    var video = document.getElementById('video');
+    var hls = new Hls();
+    hls.loadSource('http://95.140.153.88:8080/opencv/index.m3u8');
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+      video.play();
     });
   }
-
-  // Call sendPing() every 10 seconds
-  setInterval(sendPing, 4000);
-
-  // Get the user ID from the HTML template
-  var userId = "{{ user_id }}";
-
-  // Log the user ID to the console
-  console.log("User ID:", userId);
 </script>
+  
 
 {% endblock %}
