@@ -36,17 +36,19 @@ import concurrent.futures
 from queue import Queue
 import ffmpeg
 import subprocess as sp
+#import opencv.yolov7.detect as detect later
+import opencv.test_yolo as test_yolo
+
 
 def gen_frames():
     # Start the thread to read frames from the video stream
-    print('PLUG......................................')
     thread = Thread(target=update, args=())
     thread.daemon = True
     thread.start()
 
 def update():
     url1 = 'http://136.169.226.81/1554451338BMM242/tracks-v1/mono.m3u8?token='
-    token = '7184777f211c474886b0b30a9ea0e08b+'
+    token = 'ca0d2f152ebc4ecabf6b783475066b1c'
     url = (f'{url1}{token}')
     print(url)
     rtmp_Url = 'rtmp://95.140.153.88:1935/live/opencv'
@@ -81,7 +83,7 @@ def update():
     start_time = time.time()
     new_size = (720, 420)
     
-    while True:                         
+    while True:
         try:#if capture.isOpened():
             (status, frame0) = capture.read()
 
@@ -91,12 +93,14 @@ def update():
 
         except:#else:
             print('else')
-            token = get_token()
+            try:
+                token = get_token()
+            except:
+                print('error. sleeping.......................')
+                time.sleep(3600)
             url = (f'{url1}{token}')
             print(url)
 
-            capture = cv2.VideoCapture(url)
-            capture.set(cv2.CAP_PROP_BUFFERSIZE, 100)
 
 class OpencvConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
