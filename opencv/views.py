@@ -3,22 +3,22 @@ from django.http import HttpResponse
 from django.template import loader
 from django.http import StreamingHttpResponse
 
-import time
-import cv2
-import datetime as dt
+#import time
+#import cv2
+#import datetime as dt
 
 import opencv.apps as apps
-import multiprocessing
-import redis
-from PIL import Image
-import io
-import numpy as np
-import pickle
-from threading import Thread
-import threading
-import uuid
-import queue
-import sys
+#import multiprocessing
+#import redis
+#from PIL import Image
+#import io
+#import numpy as np
+#import pickle
+#from threading import Thread
+#import threading
+#import uuid
+#import queue
+#import sys
 
 
 def index(request):
