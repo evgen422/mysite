@@ -2,15 +2,43 @@
 {% load widget_tweaks %}
 {% load static %}
 {% block content %}
-
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YOLOv8 + Deep_Sort - Car Counting</title>
 </head>
 
 <body>
-    <video id="video" controls></video>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-md-12">
+        <!-- Left column -->
+      </div>
+      <div class="col-lg-6 col-md-12">
+        <!-- Central column -->
+        <h1>YOLOv8 + Deep_Sort. Car counting</h1>
+        <p>This project shows the capabilities of YOLO and Deep Sort in objects detection and tracking. First we use YOLO v8 trained on COCO dataset to detect cars and then we feed the bounding boxes to Deep Sort. Cars moving to the right are in blue boxes, to the left are green. As soon as a car touches the edge of the screen, it is counted and turns white. Below the video, you can find statistics for a day of counting.</p>    
+
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/a5er5pjSd-Y?start=279" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+       <img src="statistics.jpg" alt="Statistics" class="img-fluid">
+
+      </div>
+      <div class="col-lg-3 col-md-12">
+        <!-- Right column -->
+        <h2>GitHub Code and Explanation</h2>
+        <p>Link to GitHub code and code explanation:</p>
+        <a href="https://github.com/evgen422/mysite/blob/main/opencv/yolo8_deepsort.py" target="_blank">GitHub Code</a>
+      </div>
+    </div>
+  </div>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
+
+<!--script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script-->
+<!--video id="video" controls></video-->
+<!--
 <script>
   if (Hls.isSupported()) {
     var video = document.getElementById('video');
@@ -23,5 +51,5 @@
   }
 </script>
   
-
+-->
 {% endblock %}
