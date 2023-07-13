@@ -1,8 +1,0 @@
-1683490038819	geckodriver	INFO	Listening on 127.0.0.1:36535
-/snap/firefox/current/firefox.launcher: 46: exec: /snap/sublime-text/118/usr/lib/firefox/firefox: not found
-1683490039333	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/sna ... te" "--remote-debugging-port" "47467" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofile4yQDnw"
-/snap/firefox/current/firefox.launcher: 46: exec: /snap/sublime-text/118/usr/lib/firefox/firefox: not found
-1683490288934	geckodriver	INFO	Listening on 127.0.0.1:50921
-/snap/firefox/current/firefox.launcher: 46: exec: /snap/sublime-text/118/usr/lib/firefox/firefox: not found
-1683490289439	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/sna ... te" "--remote-debugging-port" "45429" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofile8wJIPh"
-/snap/firefox/current/firefox.launcher: 46: exec: /snap/sublime-text/118/usr/lib/firefox/firefox: not found
