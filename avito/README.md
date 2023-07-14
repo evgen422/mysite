@@ -167,7 +167,7 @@ img_view(request, car_id):
         response['Content-Disposition'] = 'inline; filename=%s' % car.id
         return response
 ```
-19) single_car_view is called when a user clicks on a cirtain car ad. It opens a new page with detailed information about the car.
+19) single_car_view is called when a user clicks on a certain car card. It opens a new page with detailed information about the car.
 ```
 single_car_view(request, car_id):
     car = get_object_or_404(Cars, pk=car_id)
