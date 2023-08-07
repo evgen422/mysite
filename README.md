@@ -57,8 +57,8 @@ sudo systemctl enable mysql
 sudo service mysql status
 
 
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '253321';
-CREATE USER 'evgeny'@'localhost' IDENTIFIED WITH mysql_native_password BY '253321';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'pass';
+CREATE USER 'evgeny'@'localhost' IDENTIFIED WITH mysql_native_password BY 'pass';
 
 
         what helped to find mysql in python:
@@ -107,10 +107,6 @@ mysql -u evgeny -p OPEN_CV < opencv2.sql
 SCRAPY SPIDER
 https://docs.scrapy.org/en/latest/intro/tutorial.html#creating-a-project
 
-
-created VPS
-root  z3mVAqZ8
-https://timeweb.cloud
 
 
 SSH
@@ -166,9 +162,6 @@ GIT
 https://product.hubspot.com/blog/git-and-github-tutorial-for-beginners
 https://selectel.ru/blog/tutorials/what-is-git-push-and-how-to-use-it/
 
-
-my token 
-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
 
 
 $ git config --global user.name "your_github_username"
