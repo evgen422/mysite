@@ -1,4 +1,4 @@
-﻿UBUNTU
+﻿UBUNTUnstalled ubuntu (need to skip unattended installation or terminal won't 
         installed visual machine virtualbox
         installed ubuntu (need to skip unattended installation or terminal won't launch) 
         python works from terminal

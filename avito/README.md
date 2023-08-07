@@ -2,10 +2,10 @@
 
 ## Introduction
 
-This project shows the apllication of Django and MySQL in eCommerce industry. First we use [Scraper.py](https://github.com/evgen422/mysite/blob/main/avito/Scraper.py) to parse Avito and collect used car database. Then we use Django to serve the database to user. 
-Deployed app can be found at http://45.95.235.237/avito/
-[Database with 20000 parsed cars from avito](https://drive.google.com/file/d/1TmwYdSoXiqJpTFmlksCUHLH4IS08XJhi/view?usp=sharing)
-[Archive with photos of 20000 cars](https://drive.google.com/file/d/1GceJOu9f3VKMqY0CR749n2RwreVC4RZ9/view?usp=sharing)
+This project shows the apllication of Django and MySQL in eCommerce industry. First we use [Scraper.py](https://github.com/evgen422/mysite/blob/main/avito/Scraper.py) to parse Avito and collect used car database. Then we use Django to serve the database to user. <br>
+Deployed app can be found at http://45.95.235.237/avito/<br>
+[Database](https://drive.google.com/file/d/1TmwYdSoXiqJpTFmlksCUHLH4IS08XJhi/view?usp=sharing) with 20000 parsed cars from avito<br>
+[Archive](https://drive.google.com/file/d/1GceJOu9f3VKMqY0CR749n2RwreVC4RZ9/view?usp=sharing) with photos of 20000 cars
 
 ## Populating the database
 
