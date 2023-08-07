@@ -3,9 +3,9 @@
 ## Introduction
 
 This project shows the capabilities of YOLO and Deep Sort in objects detection and tracking. First we use YOLO v8 trained on COCO dataset to detect cars and then we feed the bounding boxes to Deep Sort. Cars moving to the right are in blue boxes, to the left are green. As soon as a car touches the edge of the screen, it is counted and turns white.
-Initially it was planned to stream live webcam detection and tracking results and monitor the road 24/7. The code used to get frames with OpenCV from a public webcam and transfer them to an RTMP Nginx server which converted them to HLS and streamed .m3u8 to the webpage, but lately due to limited GPU resources it was decided to just record a demo video and upload it to Youtube. 
-Video and daily statistics can be found at http://45.95.235.237/opencv/
-[Database with detected cars for 24 hours on 01.08.2023](https://drive.google.com/file/d/1Om3JEaujGWtjjkklC_m1_FfU4RIFu6Py/view?usp=sharing)
+Initially it was planned to stream live webcam detection and tracking results and monitor the road 24/7. The code used to get frames with OpenCV from a public webcam and transfer them to an RTMP Nginx server which converted them to HLS and streamed .m3u8 to the webpage, but lately due to limited GPU resources it was decided to just record a demo video and upload it to Youtube. <br>
+Video and daily statistics can be found at http://45.95.235.237/opencv/ <br>
+[Database](https://drive.google.com/file/d/1Om3JEaujGWtjjkklC_m1_FfU4RIFu6Py/view?usp=sharing) with detected cars for 24 hours on 01.08.2023
 
 
 ## Populating the database
@@ -36,7 +36,7 @@ The code that is responsible for detection and tracking is located at [yolo8_dee
 
 12) Saving frame to output.mp4.
 
-## Data analisys
+## Data analysis
 
 The code that is responsible for reading database and making graphs is located at [pyplot.py](https://github.com/evgen422/mysite/blob/main/opencv/pyplot.py).
 The data is splitted into 20 minutes sections, number of detections per 20 min is plotted on graph.
