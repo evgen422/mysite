@@ -5,8 +5,10 @@
 This project shows the capabilities of YOLO and Deep Sort in objects detection and tracking. First we use YOLO v8 trained on COCO dataset to detect cars and then we feed the bounding boxes to Deep Sort. Cars moving to the right are in blue boxes, to the left are green. As soon as a car touches the edge of the screen, it is counted and turns white.
 Initially it was planned to stream live webcam detection and tracking results and monitor the road 24/7. The code used to get frames with OpenCV from a public webcam and transfer them to an RTMP Nginx server which converted them to HLS and streamed .m3u8 to the webpage, but lately due to limited GPU resources it was decided to just record a demo video and upload it to Youtube. 
 Video and daily statistics can be found at http://45.95.235.237/opencv/
+[Database with detected cars for 24 hours on 01.08.2023](https://drive.google.com/file/d/1Om3JEaujGWtjjkklC_m1_FfU4RIFu6Py/view?usp=sharing)
 
-## Description
+
+## Populating the database
 
 The code that is responsible for detection and tracking is located at [yolo8_deepsort.py](https://github.com/evgen422/mysite/blob/main/opencv/yolo8_deepsort.py).
 
@@ -33,3 +35,24 @@ The code that is responsible for detection and tracking is located at [yolo8_dee
 11) Drawing rectangles and IDs with OpenCV
 
 12) Saving frame to output.mp4.
+
+## Data analisys
+
+The code that is responsible for reading database and making graphs is located at [pyplot.py](https://github.com/evgen422/mysite/blob/main/opencv/pyplot.py).
+The data is splitted into 20 minutes sections, number of detections per 20 min is plotted on graph.
+
+1) Connecting to database
+
+2) Calling convert_data() function which prepares data. First we send argument '1' which plots graph for incoming traffic, then we send '-1' for outcoming.
+
+3) Querying the data from the table filtered by direction
+
+4) The data is in format YEAR/MONTH/DATE/HOUR/MINUTE/SECOND. We clean it so only Hour and Minute is left
+
+5) Converting to minutes only format (24h = 1440 min)
+
+6) Counting detections per 20 min and adding to a list
+
+7) Making a list to put hours as X-ticks on the graph
+
+8) Plotting the graph two times

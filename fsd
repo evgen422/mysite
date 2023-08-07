@@ -1,0 +1,350 @@
+[33mcommit b629c3fc51af9493bb9f54578ae7c2373c6c003c[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Fri Jul 14 10:45:33 2023 +0400
+
+    committing before vacation
+
+[33mcommit 3935b76f1563a35ae0c51309889e9fa41d0341cc[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Thu Jul 13 10:40:23 2023 +0400
+
+    added README for Avito
+
+[33mcommit d3845fc0f85e6816c7e97342ddcadaac25c26f31[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed Jul 12 16:27:31 2023 +0400
+
+    added readme for avito
+
+[33mcommit 0b22eb9fa370fa467b8ea515517a3881746222f0[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed Jul 12 14:53:23 2023 +0400
+
+    minor
+
+[33mcommit 7e4b9a7ed7d82aa87e86cfc633ae195174853c11[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed Jul 12 14:45:19 2023 +0400
+
+    added youtube video to opencv and README
+
+[33mcommit 392504089788716674f022f347598cca6bce5448[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Tue Jul 11 16:19:58 2023 +0400
+
+    removed streaming from ufanet cam functionality2
+
+[33mcommit 29426f9e5e1bf0335991fed025cb61b84968c949[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Tue Jul 11 15:24:49 2023 +0400
+
+    removed streaming from ufanet cam functionality
+
+[33mcommit be40bfa5c33ef095fc92f3b3eefa6dc2274e713e[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Fri Jul 7 16:31:22 2023 +0400
+
+    added yolo8_deepsort.py. successfully tracks cars in nagaevo and counts them and saves to db
+
+[33mcommit 6da852bfce1492e0b696edf09bc19ca4566667bb[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed Jun 28 19:59:06 2023 +0400
+
+    test_yolo_v5 generates bounding boxes for deep_sort in form of txt file
+
+[33mcommit e23ccb1fab18ebf862651ad4be08006fba77937f[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Fri Jun 9 16:19:36 2023 +0400
+
+    added SORT but it doesnt work.. IDs changing every frame
+
+[33mcommit 423c79cdf788a6c6303cd0439b7a65021219552e[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Thu Jun 8 16:28:18 2023 +0400
+
+    added YOLO: 3 files: test_yolo_v7 (here i manually loaded model not knowing how to do it properly, test_yolo_v7_easy: model loaded through torch.hub.load, test_yolo_v5 (just to check fps difference)/ On CPU fps is 6 on v7-tiny and v5. v7 is too slow for cpu. going to test on GPU at home. bye
+
+[33mcommit ac37662cc2c15c4749212a4d4e46e6b842811059[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Thu Jun 1 17:19:14 2023 +0400
+
+    stream converted from rtmp to hls, browser player successfully plays video -minor
+
+[33mcommit 0ab523077423bc724b25c2ffb1c0f0b14470e12a[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Thu Jun 1 17:16:47 2023 +0400
+
+    stream converted from rtmp to hls, browser player successfully plays video
+
+[33mcommit 6eee5ef417469f6994d9a9667af6214e7b278f2b[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Thu Jun 1 10:58:26 2023 +0400
+
+    testing o server: will it work when token changes
+
+[33mcommit 3ae118505d84c96b56af93f9448cc7e3ca3ad127[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed May 31 17:29:26 2023 +0400
+
+    RTMP works! Just had to lower quality
+
+[33mcommit aa9884d6060d4f32076a2e0cbbfd07a0f36792a6[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed May 31 14:55:52 2023 +0500
+
+    changing whole system to translate frames through NGINX insead of redis and django httpreturn
+
+[33mcommit 4658c3cca02ea99557bf9b662fbf8e92637dc7f2[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Fri May 26 21:42:04 2023 +0500
+
+    corrected timings
+
+[33mcommit a50b7f7e9c5da7e5d983577cf5d4eb1ba3b13db2[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Fri May 26 20:45:28 2023 +0500
+
+    increased buffer to counter stuttering
+
+[33mcommit cc836146f5889bb667d727cfe441f24b9255bf29[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Fri May 26 13:55:52 2023 +0400
+
+    added breaking if dead
+
+[33mcommit b605c42ea99169e81ebf98ba4fc13335f224b000[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Fri May 26 13:36:44 2023 +0400
+
+    now when ping is not received, redis thread breaks
+
+[33mcommit 92b8bb54f864d89817343cb0fbdda200815ce128[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Thu May 25 16:43:06 2023 +0400
+
+    added ping function: JS send ping POST to views.py every 10 sec. planning to start send frames from ping function
+
+[33mcommit 69001256348d6e22acdd7ba7a858a7fbb12168d5[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed May 24 16:56:18 2023 +0400
+
+    succesfully made individual buffer for each user. Now frames dont mix up when two tabs are open. deleted portfolio
+
+[33mcommit 471a68311df64001ec8102087074d78cc67b0ca1[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Tue May 23 14:40:33 2023 +0400
+
+    added separate thread for function 'stream' in views.py
+
+[33mcommit bf94177d145aae707b94fbc0d47355ce55aaab97[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sun May 21 21:00:01 2023 +0500
+
+    buffer now is in views.py
+
+[33mcommit 1a095c8f83ca9ab46bef50dfe18a2039bc5ea762[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sun May 21 09:28:38 2023 +0500
+
+    added concurrent.futures.ThreadPoolExecutor() to counter low fps
+
+[33mcommit 3901a770a9830378cbda3a8796025fd3fb224ad4[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sun May 21 01:19:37 2023 +0500
+
+    added buffer BATCH. frames are sent in batches 25pcs over redis
+
+[33mcommit 438edca292eea013896312be0ab62d40ea8f2680[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sun May 21 00:43:05 2023 +0500
+
+    changed exchange mechanism to RESIS. now video plays very well. The problem why second tab wont load video is cashing in browser
+
+[33mcommit ee0d80b21d2d35c6b3a8ae4f8cb2de1fd2ce5825[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Fri May 19 17:01:16 2023 +0400
+
+    new axchange way between apps and views. first i tried queue, then global and now pipe, but it works not very well.
+
+[33mcommit 2c65bdb6277b287a3074d6096d21440fdbf1aa2f[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Thu May 18 11:29:46 2023 +0400
+
+    buffer in separate thread
+
+[33mcommit 79b3c6bf1ad8738d66dfbcf70143ad15f707ea6e[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Thu May 18 09:43:50 2023 +0400
+
+    minor
+
+[33mcommit 2dad339a4a7d1e0f7b24cc4cf9c52e20bca1ff99[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Thu May 18 09:29:55 2023 +0400
+
+    change queue buffer to array
+
+[33mcommit 3b4dd21f8a836ca999bc6f6e7b8d4eac67d05bb2[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed May 17 15:28:01 2023 +0400
+
+    made buffer to counter video stuttering3
+
+[33mcommit 424e7b8904e5baeb3447728089a05d9b42796daa[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed May 17 15:04:42 2023 +0400
+
+    made buffer to counter video stuttering2
+
+[33mcommit de4880086aefb4a20e09d2a04a9900dfd02bd7f6[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed May 17 14:29:38 2023 +0400
+
+    made buffer to counter video stuttering
+
+[33mcommit e766df20b34e46d135c789ecfed4c4a2ddbc931b[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Mon May 15 16:49:55 2023 +0500
+
+    fixing lags
+
+[33mcommit efe37aa2215d6e0f04347fb87e2e7f59437a4b81[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sun May 14 22:39:51 2023 +0500
+
+    minor updates weekend
+
+[33mcommit 3a47744b5da1e175223edfaeeb5402b72d04e06f[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Fri May 12 16:55:20 2023 +0400
+
+    multi-thread functionality implemented3
+
+[33mcommit 970258d91cbdc13c5f7c88bf7a154e18384074e0[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Fri May 12 15:33:09 2023 +0400
+
+    multi-thread functionality implemented2
+
+[33mcommit c005bd04baf7e8607f5b428ba8d5f72a6fcc5d5e[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Fri May 12 14:58:23 2023 +0400
+
+    multi-thread functionality implemented
+
+[33mcommit cee5ed8251604959ccd6bfdd8d5ee2c3547e834c[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed May 10 17:04:09 2023 +0400
+
+    added opencv app, stream
+
+[33mcommit bd47619067b18a7d41ab3d091946a23c17c5c6fe[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed May 10 00:37:21 2023 +0500
+
+    started video detection app
+
+[33mcommit 04330f08ceeaf3d7c76da65c2149db17069585fc[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sun May 7 14:23:35 2023 +0500
+
+    added view details page
+
+[33mcommit 8bf9eda8b2778ba7e50a9581a134e098c3de9847[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sun May 7 01:10:34 2023 +0500
+
+    fixed img folder path on server side
+
+[33mcommit 90b06e7383ff00be69957254e56881bfdac13e2d[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sat May 6 11:02:35 2023 +0500
+
+    fixed image and text sizes on a small screen
+
+[33mcommit a1311cf6bf1aee778a6e6fd564483ecd56c1ebbb[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sat May 6 02:33:14 2023 +0500
+
+    fixed image and text sizes on a small screen
+
+[33mcommit fb73e828f7409fff78f813bddc1f0824d6b407a0[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Fri May 5 17:01:13 2023 +0400
+
+    filters menu now hides on small devices
+
+[33mcommit fec5f81c775848e432ff0849fa9b2f3015d3dc02[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Tue May 2 15:06:36 2023 +0400
+
+    added frontend: bootstrap, jquery
+
+[33mcommit a3251ffa8e36ffd5e2e51e24816a3338e74e8204[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed Apr 26 15:18:45 2023 +0400
+
+    fixed 'all' combinations
+
+[33mcommit 5f83c1f91febc3d81da4eebb85a259b2bab7f575[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed Apr 26 13:54:56 2023 +0400
+
+    added 'all' option for fields, cleaned code
+
+[33mcommit b4eadb11de4a6c75a1d208b68e1cbec9de828a50[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed Apr 26 10:44:02 2023 +0400
+
+    added model and make working search fields
+
+[33mcommit f74df7c686107af1148592163312c5ecaed0501f[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sun Apr 23 19:53:54 2023 +0400
+
+    added working form where you can select make. dropdown menu not working
+
+[33mcommit 4d3979befe7071fe08b7e49d4dc8f80f7a90dd99[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sat Apr 22 23:22:34 2023 +0400
+
+    test
+
+[33mcommit 5a8890a8742cafc60af2e40434d30360986c1f93[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sat Apr 22 23:15:38 2023 +0400
+
+    added SQL table to Django. http://127.0.0.1:8000/avito/top-makes/
+
+[33mcommit e0400d25ac14eb36254ae18c8e8783e7b71290ef[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Sat Apr 22 11:23:58 2023 +0400
+
+    Added scraper, img support
+
+[33mcommit 1934cc68c0ddde86e5cc3b196bd11281ba1bbc93[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Wed Apr 19 12:05:04 2023 +0400
+
+    added portfolio Darya and Bootstrap template
+
+[33mcommit ccada6dcf94f1397f09652e0447697b3617c9c36[m[33m ([m[1;32mchanging_greeting[m[33m)[m
+Merge: 0a1c518 8eca8eb
+Author: evgen422 <53831849+evgen422@users.noreply.github.com>
+Date:   Tue Apr 18 18:21:32 2023 +0500
+
+    Merge pull request #1 from evgen422/changing_greeting
+    
+    Changed Dasha to Slavyan
+
+[33mcommit 8eca8eb1c5365f38668f41751ebcd9b19991a115[m[33m ([m[1;31morigin/changing_greeting[m[33m)[m
+Author: evgen422 <evgen422@gmail.com>
+Date:   Tue Apr 18 17:14:07 2023 +0400
+
+    Changed Dasha to Slavyan
+
+[33mcommit 0a1c51827acecd54cc981b1663372cb6b87d4f6c[m
+Author: Evgeny Artemiev <evgen422@gmail.com>
+Date:   Tue Apr 18 15:14:30 2023 +0400
+
+    First commit of blank Django website

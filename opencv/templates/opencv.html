@@ -7,29 +7,101 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YOLOv8 + Deep_Sort - Car Counting</title>
 </head>
+<style>
+    .orange-line {
+        width: 3rem;
+        height: 0;
+        border: none;
+        border-top: 0.5rem solid rgb(251, 125, 12);
+    }
+    .blue-line {
+        width: 3rem;
+        height: 0;
+        border: none;
+        border-top: 0.5rem solid rgb(30, 121, 178);
+    }
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio (divide height by width, then multiply by 100) */
+      height: 0;
+      overflow: hidden;
+    }
+    
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+</style>
 
 <body>
   <div class="container">
     <div class="row">
-      <div class="col-lg-3 col-md-12">
-        <!-- Left column -->
+      <!-- Left column -->
+      <div class="col-lg-3">
       </div>
-      <div class="col-lg-6 col-md-12">
+
+      <!--Central Column-->
+      <div class="col-lg-6">
+
         <!-- Central column -->
         <h1>YOLOv8 + Deep_Sort. Car counting</h1>
-        <p>This project shows the capabilities of YOLO and Deep Sort in objects detection and tracking. First we use YOLO v8 trained on COCO dataset to detect cars and then we feed the bounding boxes to Deep Sort. Cars moving to the right are in blue boxes, to the left are green. As soon as a car touches the edge of the screen, it is counted and turns white. Below the video, you can find statistics for a day of counting.</p>    
+        <p>This project shows the capabilities of YOLO and Deep Sort in objects detection and tracking. First we use YOLO v8 trained on COCO dataset to detect cars and then we feed the bounding boxes to Deep Sort. Cars moving to the right are in blue boxes, to the left are green. As soon as a car touches the edge of the screen, it is counted and turns white. Below the video, you can find traffic data analisys for 24 hours of counting.</p>    
+        <div class="video-container ml-3">
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/a5er5pjSd-Y?start=279" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
 
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/a5er5pjSd-Y?start=279" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <img src="{% static 'chart.png' %}" alt="Statistics" class="img-fluid">
+        <div class="container">
+          <div class="row">
+              <div class="col-sm-3">
+                  <div class="my-column">
+                    
+                  </div>
+              </div>
+              <div class="col-sm-1 mt-2">
+                  <div class="my-column">
+                    <div class="orange-line"></div>
+                  </div>
+              </div>
+              <div class="col-sm-3">
+                  <div class="my-column">
+                    To the City
+                  </div>
+              </div>
+              <div class="col-sm-1 mt-2">
+                  <div class="my-column">
+                    <div class="blue-line"></div>
+                  </div>
+              </div>
+              <div class="col-sm-3">
+                  <div class="my-column">
+                    Back to Nagaevo
+                  </div>
+              </div>
+          </div>
 
-       <img src="statistics.jpg" alt="Statistics" class="img-fluid">
+        
 
+          <h4 class="mt-1">Total Number of Cars over 24 Hours</h4>
+          <p>To the city (from right to left) - 9,364</p>
+          <p>Back (from left to right) - 8,486</p>
+          <p>As expected, outgoing traffic (to the City) peaks in the morning and incoming in the evening.</p>
+          <p>Surprisingly, morning traffic peaks earlier than expected, at 6 AM.</p>
+          <p>From 8 AM to 1 PM, graphs have a similar pattern, which is yet to be explained.</p>
+
+        </div>
       </div>
-      <div class="col-lg-3 col-md-12">
-        <!-- Right column -->
+
+      <!-- Right column -->
+      <div class="col-lg-3">
         <h2>GitHub Code and Explanation</h2>
         <p>Link to GitHub code and code explanation:</p>
         <a href="https://github.com/evgen422/mysite/tree/main/opencv#readme" target="_blank">GitHub Code</a>
       </div>
+
     </div>
   </div>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
