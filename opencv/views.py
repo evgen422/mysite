@@ -22,15 +22,10 @@ import opencv.apps as apps
 
 
 def index(request):
-    # Create a new buffer for the user if one does not already exist
-    #user_id = str(uuid.uuid4())
-    #print('user_id', user_id)
-    #if user_id not in user_buffers:
-    #    user_buffers[user_id] = []
-    #context = {           
-    #    'user_id': user_id,
-    #}
     return render(request, 'opencv.html')
+
+car_counting = index
+
 
 '''
 # Define the view that renders the HTML template and streams the video
