@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from opencv import views as opencv_views
 
 from . import views
 
@@ -25,5 +26,6 @@ urlpatterns = [
     path("portfolio/", include("portfolio.urls")),
     path("avito/", include("avito.urls")),
     path("opencv/", include("opencv.urls")),
+    path("live-stream/", opencv_views.live_stream, name="live_stream_root"),
 ]
 

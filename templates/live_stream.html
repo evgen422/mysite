@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row mb-3">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'car_counting' %}">OpenCV</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Live Stream</li>
+        </ol>
+      </nav>
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          <h1 class="h2 fw-bold mb-1">Live CCTV Camera Stream</h1>
+          <p class="text-muted mb-0" id="camera-name">
+            {{ stream_info.camera_name }}
+          </p>
+        </div>
+        <div>
+          <span class="badge bg-danger text-uppercase px-3 py-2 me-2" id="live-badge">
+            <span class="spinner-grow spinner-grow-sm me-1" role="status" aria-hidden="true" style="width: 0.6rem; height: 0.6rem;"></span>
+            LIVE
+          </span>
+          <button id="refresh-token-btn" class="btn btn-outline-primary btn-sm">Refresh Token</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+          <span class="small font-monospace">HLS Stream Player (.m3u8)</span>
+          <span class="badge bg-secondary" id="player-status">Connecting...</span>
+        </div>
+        <div class="ratio ratio-16x9 bg-black position-relative">
+          <video id="cctv-video" class="w-100 h-100" controls autoplay muted playsinline></video>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center flex-wrap small text-muted">
+            <div>
+              <strong>Server:</strong> <span id="info-server">{{ stream_info.server }}</span> | 
+              <strong>Cam ID:</strong> <span id="info-cam-id">{{ stream_info.camera_id }}</span>
+            </div>
+            <div>
+              <span class="badge bg-success">Auto-renewal loop active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header bg-light fw-bold">Stream Information</div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-0">
+            <li class="mb-2">
+              <strong>Source:</strong> <a href="https://maps.ufanet.ru/ufa" target="_blank" rel="noopener noreferrer">Ufanet Public CCTV</a>
+            </li>
+            <li class="mb-2">
+              <strong>Token Rotation:</strong> Background cycle refreshes every 5 mins
+            </li>
+            <li class="mb-2">
+              <strong>Active Token:</strong>
+              <div class="p-2 bg-light rounded text-break font-monospace small" id="info-token">{{ stream_info.token }}</div>
+            </li>
+            <li class="mb-2">
+              <strong>Direct Stream URL:</strong>
+              <div class="p-2 bg-light rounded text-break font-monospace small" id="info-stream-url">
+                <a href="{{ stream_info.stream_url }}" target="_blank" id="stream-url-link">{{ stream_info.stream_url }}</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+  (function() {
+    var initialStreamUrl = "{{ stream_info.stream_url|default:'' }}";
+    var video = document.getElementById('cctv-video');
+    var playerStatus = document.getElementById('player-status');
+    var tokenDisplay = document.getElementById('info-token');
+    var streamUrlLink = document.getElementById('stream-url-link');
+    var serverDisplay = document.getElementById('info-server');
+    var refreshBtn = document.getElementById('refresh-token-btn');
+    var hls = null;
+    var currentToken = "{{ stream_info.token|default:'' }}";
+
+    function setStatus(text, bgClass) {
+      playerStatus.textContent = text;
+      playerStatus.className = 'badge ' + (bgClass || 'bg-secondary');
+    }
+
+    function initHls(streamUrl) {
+      if (!streamUrl) {
+        setStatus('No Stream URL', 'bg-warning text-dark');
+        return;
+      }
+
+      if (Hls.isSupported()) {
+        if (hls) {
+          hls.destroy();
+        }
+        hls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+          liveSyncDurationCount: 3
+        });
+
+        hls.loadSource(streamUrl);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+          setStatus('Playing Live', 'bg-success');
+          video.play().catch(function(err) {
+            console.log('Autoplay muted:', err);
+          });
+        });
+
+        hls.on(Hls.Events.ERROR, function(event, data) {
+          if (data.fatal) {
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                setStatus('Network issue, retrying...', 'bg-warning text-dark');
+                checkTokenUpdate(true);
+                hls.startLoad();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                setStatus('Media issue, recovering...', 'bg-warning text-dark');
+                hls.recoverMediaError();
+                break;
+              default:
+                setStatus('Fatal error', 'bg-danger');
+                hls.destroy();
+                break;
+            }
+          }
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = streamUrl;
+        video.addEventListener('loadedmetadata', function() {
+          setStatus('Playing Live (Native)', 'bg-success');
+          video.play().catch(function() {});
+        });
+      } else {
+        setStatus('HLS not supported', 'bg-danger');
+      }
+    }
+
+    function checkTokenUpdate(force) {
+      var url = "{% url 'live_stream_status' %}" + (force ? "?force=true" : "");
+      fetch(url)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && data.stream_url) {
+            if (data.token !== currentToken || force) {
+              currentToken = data.token;
+              tokenDisplay.textContent = data.token;
+              streamUrlLink.textContent = data.stream_url;
+              streamUrlLink.href = data.stream_url;
+              serverDisplay.textContent = data.server;
+              initHls(data.stream_url);
+            }
+          }
+        })
+        .catch(function(err) {
+          console.error('Error checking token:', err);
+        });
+    }
+
+    refreshBtn.addEventListener('click', function() {
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = 'Refreshing...';
+      fetch("{% url 'live_stream_status' %}?force=true")
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && data.stream_url) {
+            currentToken = data.token;
+            tokenDisplay.textContent = data.token;
+            streamUrlLink.textContent = data.stream_url;
+            streamUrlLink.href = data.stream_url;
+            serverDisplay.textContent = data.server;
+            initHls(data.stream_url);
+          }
+        })
+        .finally(function() {
+          refreshBtn.disabled = false;
+          refreshBtn.textContent = 'Refresh Token';
+        });
+    });
+
+    // Check for updated tokens every 3 minutes
+    setInterval(function() {
+      checkTokenUpdate(false);
+    }, 180000);
+
+    initHls(initialStreamUrl);
+  })();
+</script>
+{% endblock %}

@@ -1,30 +1,32 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.http import StreamingHttpResponse
 
-#import time
-#import cv2
-#import datetime as dt
+from . import stream_manager
 
-import opencv.apps as apps
-#import multiprocessing
-#import redis
-#from PIL import Image
-#import io
-#import numpy as np
-#import pickle
-#from threading import Thread
-#import threading
-#import uuid
-#import queue
-#import sys
+# Ensure background token refresher is started
+stream_manager.start_token_background_worker()
 
 
 def index(request):
     return render(request, 'opencv.html')
 
 car_counting = index
+
+
+def live_stream(request):
+    """Render the live CCTV camera stream page."""
+    stream_info = stream_manager.refresh_stream_info()
+    return render(request, 'live_stream.html', {'stream_info': stream_info})
+
+
+def live_stream_status(request):
+    """API endpoint to get current stream URL or force token refresh."""
+    force = request.GET.get('force', 'false').lower() == 'true'
+    stream_info = stream_manager.refresh_stream_info(force=force)
+    return JsonResponse(stream_info)
+
 
 
 '''
