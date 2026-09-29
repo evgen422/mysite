@@ -14,15 +14,15 @@
       </nav>
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div>
-          <h1 class="h2 fw-bold mb-1">Live CCTV Camera Stream</h1>
+          <h1 class="h2 fw-bold mb-1">Live CCTV Camera Stream (YOLOv11 + ByteTrack)</h1>
           <p class="text-muted mb-0" id="camera-name">
             {{ stream_info.camera_name }}
           </p>
         </div>
-        <div>
-          <span class="badge bg-danger text-uppercase px-3 py-2 me-2" id="live-badge">
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-success text-uppercase px-3 py-2" id="live-badge">
             <span class="spinner-grow spinner-grow-sm me-1" role="status" aria-hidden="true" style="width: 0.6rem; height: 0.6rem;"></span>
-            LIVE
+            AI TRACKING LIVE
           </span>
           <button id="refresh-token-btn" class="btn btn-outline-primary btn-sm">Refresh Token</button>
         </div>
@@ -32,29 +32,82 @@
 
   <div class="row g-4">
     <div class="col-lg-8">
-      <div class="card shadow-sm border-0">
+      <div class="card shadow-sm border-0 mb-3">
         <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-          <span class="small font-monospace">HLS Stream Player (.m3u8)</span>
-          <span class="badge bg-secondary" id="player-status">Connecting...</span>
+          <span class="small font-monospace">
+            YOLOv11 Modified Stream (Bounding Boxes &amp; ID)
+          </span>
+          <span class="badge bg-success" id="player-status">Streaming AI Feed</span>
         </div>
-        <div class="ratio ratio-16x9 bg-black position-relative">
-          <video id="cctv-video" class="w-100 h-100" controls autoplay muted playsinline></video>
+        <div class="ratio ratio-16x9 bg-black position-relative d-flex align-items-center justify-content-center overflow-hidden">
+          <img id="yolo-stream" src="{% url 'live_stream_feed' %}" class="w-100 h-100" style="object-fit: contain;" alt="YOLOv11 ByteTrack Live Stream Feed" />
         </div>
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center flex-wrap small text-muted">
             <div>
-              <strong>Server:</strong> <span id="info-server">{{ stream_info.server }}</span> | 
-              <strong>Cam ID:</strong> <span id="info-cam-id">{{ stream_info.camera_id }}</span>
+              <strong>Model:</strong> YOLO11n (CPU) | 
+              <strong>Tracker:</strong> ByteTrack |
+              <strong>Classes:</strong> Car, Motorbike, Bus, Truck
             </div>
             <div>
-              <span class="badge bg-success">Auto-renewal loop active</span>
+              <span class="badge bg-primary" id="yolo-fps-badge">Detecting...</span>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible original raw HLS stream toggle -->
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          <span class="fw-bold small text-secondary">Original Raw HLS Stream (.m3u8)</span>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-secondary" id="raw-player-status">Idle</span>
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#rawStreamCollapse" aria-expanded="false" aria-controls="rawStreamCollapse">
+              Toggle Raw Stream
+            </button>
+          </div>
+        </div>
+        <div class="collapse" id="rawStreamCollapse">
+          <div class="ratio ratio-16x9 bg-black">
+            <video id="cctv-video" class="w-100 h-100" controls muted playsinline></video>
+          </div>
+          <div class="p-3 bg-light small text-muted">
+            Raw unannotated HLS stream from Ufanet CCTV for comparison.
           </div>
         </div>
       </div>
     </div>
 
     <div class="col-lg-4">
+      <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header bg-light fw-bold">Live AI Tracking Info</div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-0">
+            <li class="mb-2">
+              <strong>Processing Status:</strong>
+              <span class="badge bg-success ms-1" id="ai-status">Active</span>
+            </li>
+            <li class="mb-2">
+              <strong>Active Vehicles:</strong>
+              <span class="fw-bold text-primary fs-5 ms-1" id="ai-vehicles-count">0</span>
+            </li>
+            <li class="mb-2">
+              <strong>FPS (CPU VirtualBox):</strong>
+              <span class="fw-bold text-dark ms-1" id="ai-fps-val">--</span>
+            </li>
+            <li class="mb-2">
+              <strong>Tracked Classes:</strong>
+              <div class="mt-1">
+                <span class="badge bg-info text-dark me-1">Cars (2)</span>
+                <span class="badge bg-info text-dark me-1">Motorcycles (3)</span>
+                <span class="badge bg-info text-dark me-1">Buses (5)</span>
+                <span class="badge bg-info text-dark me-1">Trucks (7)</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
       <div class="card shadow-sm border-0 mb-3">
         <div class="card-header bg-light fw-bold">Stream Information</div>
         <div class="card-body">
@@ -63,7 +116,13 @@
               <strong>Source:</strong> <a href="https://maps.ufanet.ru/ufa" target="_blank" rel="noopener noreferrer">Ufanet Public CCTV</a>
             </li>
             <li class="mb-2">
-              <strong>Token Rotation:</strong> Background cycle refreshes every 5 mins
+              <strong>Server:</strong> <span id="info-server" class="font-monospace small">{{ stream_info.server }}</span>
+            </li>
+            <li class="mb-2">
+              <strong>Cam ID:</strong> <span id="info-cam-id" class="font-monospace small">{{ stream_info.camera_id }}</span>
+            </li>
+            <li class="mb-2">
+              <strong>Token Rotation:</strong> Auto 5 mins background refresh
             </li>
             <li class="mb-2">
               <strong>Active Token:</strong>
@@ -84,98 +143,156 @@
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script>
   (function() {
-    var initialStreamUrl = "{{ stream_info.stream_url|default:'' }}";
-    var video = document.getElementById('cctv-video');
+    var yoloImg = document.getElementById('yolo-stream');
+    var yoloFpsBadge = document.getElementById('yolo-fps-badge');
+    var aiVehiclesCount = document.getElementById('ai-vehicles-count');
+    var aiFpsVal = document.getElementById('ai-fps-val');
+    var aiStatus = document.getElementById('ai-status');
     var playerStatus = document.getElementById('player-status');
     var tokenDisplay = document.getElementById('info-token');
     var streamUrlLink = document.getElementById('stream-url-link');
     var serverDisplay = document.getElementById('info-server');
     var refreshBtn = document.getElementById('refresh-token-btn');
-    var hls = null;
-    var currentToken = "{{ stream_info.token|default:'' }}";
 
-    function setStatus(text, bgClass) {
-      playerStatus.textContent = text;
-      playerStatus.className = 'badge ' + (bgClass || 'bg-secondary');
+    // Poll live AI tracking status
+    function updateYoloStats() {
+      fetch("{% url 'live_stream_yolo_stats' %}")
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data) {
+            if (data.fps !== undefined) {
+              aiFpsVal.textContent = data.fps + ' fps';
+              yoloFpsBadge.textContent = data.fps + ' FPS';
+            }
+            if (data.tracked_vehicles !== undefined) {
+              aiVehiclesCount.textContent = data.tracked_vehicles;
+            }
+            if (data.status) {
+              aiStatus.textContent = data.status;
+            }
+          }
+        })
+        .catch(function(err) {});
     }
 
-    function initHls(streamUrl) {
-      if (!streamUrl) {
-        setStatus('No Stream URL', 'bg-warning text-dark');
+    setInterval(updateYoloStats, 1500);
+
+    if (yoloImg) {
+      yoloImg.onerror = function() {
+        playerStatus.textContent = 'Reconnecting AI feed...';
+        playerStatus.className = 'badge bg-warning text-dark';
+        setTimeout(function() {
+          yoloImg.src = "{% url 'live_stream_feed' %}?t=" + new Date().getTime();
+        }, 2000);
+      };
+
+      yoloImg.onload = function() {
+        playerStatus.textContent = 'Streaming AI Feed';
+        playerStatus.className = 'badge bg-success';
+      };
+    }
+
+    // Optional raw stream playback (lazy-loaded, token kept in sync)
+    var rawVideo = document.getElementById('cctv-video');
+    var rawCollapse = document.getElementById('rawStreamCollapse');
+    var rawPlayerStatus = document.getElementById('raw-player-status');
+    var hls = null;
+    var rawStreamLoaded = false;
+    var rawUrl = "{{ stream_info.stream_url|default:'' }}";
+    var currentToken = "{{ stream_info.token|default:'' }}";
+
+    function setRawStatus(text, bgClass) {
+      if (!rawPlayerStatus) return;
+      rawPlayerStatus.textContent = text;
+      rawPlayerStatus.className = 'badge ' + (bgClass || 'bg-secondary');
+    }
+
+    function initRawHls(url) {
+      if (!url || !rawVideo) {
+        setRawStatus('No Stream URL', 'bg-warning text-dark');
+        return;
+      }
+
+      if (typeof Hls === 'undefined') {
+        setRawStatus('hls.js unavailable', 'bg-danger');
         return;
       }
 
       if (Hls.isSupported()) {
-        if (hls) {
-          hls.destroy();
-        }
+        if (hls) hls.destroy();
         hls = new Hls({
           enableWorker: true,
           lowLatencyMode: true,
           liveSyncDurationCount: 3
         });
 
-        hls.loadSource(streamUrl);
-        hls.attachMedia(video);
+        hls.loadSource(url);
+        hls.attachMedia(rawVideo);
 
         hls.on(Hls.Events.MANIFEST_PARSED, function() {
-          setStatus('Playing Live', 'bg-success');
-          video.play().catch(function(err) {
-            console.log('Autoplay muted:', err);
-          });
+          setRawStatus('Playing Live', 'bg-success');
+          rawVideo.play().catch(function() {});
         });
 
         hls.on(Hls.Events.ERROR, function(event, data) {
-          if (data.fatal) {
-            switch (data.type) {
-              case Hls.ErrorTypes.NETWORK_ERROR:
-                setStatus('Network issue, retrying...', 'bg-warning text-dark');
-                checkTokenUpdate(true);
-                hls.startLoad();
-                break;
-              case Hls.ErrorTypes.MEDIA_ERROR:
-                setStatus('Media issue, recovering...', 'bg-warning text-dark');
-                hls.recoverMediaError();
-                break;
-              default:
-                setStatus('Fatal error', 'bg-danger');
-                hls.destroy();
-                break;
-            }
+          if (!data.fatal) return;
+          if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+            setRawStatus('Network issue, retrying...', 'bg-warning text-dark');
+            refreshStreamInfo(true);
+            hls.startLoad();
+          } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+            setRawStatus('Media issue, recovering...', 'bg-warning text-dark');
+            hls.recoverMediaError();
+          } else {
+            setRawStatus('Fatal error', 'bg-danger');
+            hls.destroy();
+            hls = null;
           }
         });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = streamUrl;
-        video.addEventListener('loadedmetadata', function() {
-          setStatus('Playing Live (Native)', 'bg-success');
-          video.play().catch(function() {});
+      } else if (rawVideo.canPlayType('application/vnd.apple.mpegurl')) {
+        rawVideo.src = url;
+        rawVideo.addEventListener('loadedmetadata', function() {
+          setRawStatus('Playing Live (Native)', 'bg-success');
+          rawVideo.play().catch(function() {});
         });
       } else {
-        setStatus('HLS not supported', 'bg-danger');
+        setRawStatus('HLS not supported', 'bg-danger');
       }
     }
 
-    function checkTokenUpdate(force) {
-      var url = "{% url 'live_stream_status' %}" + (force ? "?force=true" : "");
-      fetch(url)
+    function refreshStreamInfo(force) {
+      // Keep the displayed token/URL in sync and reload the raw player when it rotates
+      fetch("{% url 'live_stream_status' %}" + (force ? "?force=true" : ""))
         .then(function(res) { return res.json(); })
         .then(function(data) {
-          if (data && data.stream_url) {
-            if (data.token !== currentToken || force) {
-              currentToken = data.token;
-              tokenDisplay.textContent = data.token;
-              streamUrlLink.textContent = data.stream_url;
-              streamUrlLink.href = data.stream_url;
-              serverDisplay.textContent = data.server;
-              initHls(data.stream_url);
-            }
+          if (!data || !data.stream_url) return;
+          rawUrl = data.stream_url;
+          tokenDisplay.textContent = data.token;
+          streamUrlLink.textContent = data.stream_url;
+          streamUrlLink.href = data.stream_url;
+          serverDisplay.textContent = data.server;
+          if (data.token !== currentToken || force) {
+            currentToken = data.token;
+            if (rawStreamLoaded) initRawHls(data.stream_url);
           }
         })
-        .catch(function(err) {
-          console.error('Error checking token:', err);
-        });
+        .catch(function(err) {});
     }
 
+    if (rawCollapse) {
+      rawCollapse.addEventListener('shown.bs.collapse', function() {
+        if (!rawStreamLoaded && rawUrl) {
+          initRawHls(rawUrl);
+          rawStreamLoaded = true;
+        }
+        if (rawVideo) rawVideo.play().catch(function() {});
+      });
+      rawCollapse.addEventListener('hidden.bs.collapse', function() {
+        if (rawVideo) rawVideo.pause();
+      });
+    }
+
+    // Token refresh button
     refreshBtn.addEventListener('click', function() {
       refreshBtn.disabled = true;
       refreshBtn.textContent = 'Refreshing...';
@@ -183,12 +300,18 @@
         .then(function(res) { return res.json(); })
         .then(function(data) {
           if (data && data.stream_url) {
+            rawUrl = data.stream_url;
             currentToken = data.token;
             tokenDisplay.textContent = data.token;
             streamUrlLink.textContent = data.stream_url;
             streamUrlLink.href = data.stream_url;
             serverDisplay.textContent = data.server;
-            initHls(data.stream_url);
+            if (yoloImg) {
+              yoloImg.src = "{% url 'live_stream_feed' %}?t=" + new Date().getTime();
+            }
+            if (rawStreamLoaded) {
+              initRawHls(data.stream_url);
+            }
           }
         })
         .finally(function() {
@@ -197,12 +320,10 @@
         });
     });
 
-    // Check for updated tokens every 3 minutes
+    // Auto-renewal loop: keeps tokens and the raw player alive across rotations
     setInterval(function() {
-      checkTokenUpdate(false);
+      refreshStreamInfo(false);
     }, 180000);
-
-    initHls(initialStreamUrl);
   })();
 </script>
 {% endblock %}

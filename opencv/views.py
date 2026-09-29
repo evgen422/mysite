@@ -27,6 +27,29 @@ def live_stream_status(request):
     stream_info = stream_manager.refresh_stream_info(force=force)
     return JsonResponse(stream_info)
 
+def live_stream_feed(request):
+    """
+    Streaming HTTP response that delivers YOLOv11 + ByteTrack annotated frames.
+    """
+    from . import yolo11_bytetrack
+    broadcaster = yolo11_bytetrack.get_broadcaster()
+    return StreamingHttpResponse(
+        broadcaster.mjpeg_generator(),
+        content_type='multipart/x-mixed-replace; boundary=frame'
+    )
+
+
+def live_stream_stats(request):
+    """
+    Returns real-time FPS and tracking statistics from the YOLO11 ByteTracker.
+    """
+    from . import yolo11_bytetrack
+    broadcaster = yolo11_bytetrack.get_broadcaster()
+    stats = broadcaster.stats.copy()
+    stats["subscribers"] = broadcaster.subscribers
+    return JsonResponse(stats)
+
+
 
 
 '''

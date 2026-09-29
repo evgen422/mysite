@@ -27,5 +27,9 @@ urlpatterns = [
     path("avito/", include("avito.urls")),
     path("opencv/", include("opencv.urls")),
     path("live-stream/", opencv_views.live_stream, name="live_stream_root"),
+    path("live-stream/feed/", opencv_views.live_stream_feed, name="live_stream_feed_root"),
+    path("live-stream/status/", opencv_views.live_stream_status, name="live_stream_status_root"),
+    path("live-stream/yolo-stats/", opencv_views.live_stream_stats, name="live_stream_yolo_stats_root"),
+
 ]
 
